@@ -54,7 +54,7 @@ logger = get_logger(__name__)
 
 
 # -----------------------------------------------------------------------------
-# Inputs — a fixed 3×3 SPD-like system reused across several measurements
+# Inputs — a fixed 3x3 SPD-like system reused across several measurements
 # -----------------------------------------------------------------------------
 A: np.ndarray = np.array(
     [
@@ -156,7 +156,7 @@ def main() -> dict[str, object]:
         logger.info("Set %d", row["set"])
         logger.info("  b           = %s", row["b"])
         logger.info("  x           = %s", np.round(row["solution"], 6))
-        logger.info("  ‖b − Ax‖    = %.3e", row["residual_norm"])
+        logger.info("  ‖b - Ax‖    = %.3e", row["residual_norm"])
 
     logger.info("Direct solve for set 1 (validation): %s", np.round(direct_first, 6))
 
