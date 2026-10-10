@@ -53,8 +53,9 @@ The objectives are to:
 
 ## Task 02 — NumPy Arrays and Descriptive Statistics
 
-![NumPy broadcasting](https://numpy.org/doc/stable/_images/broadcasting_1.png)  
-<sub>Figure: NumPy broadcasting — a scalar is stretched to match the shape of a 1-D array during element-wise multiplication. Source: NumPy documentation.</sub>
+![Task 02: NumPy arrays and descriptive statistics](docs/figures/task-02.svg)
+
+<sub>Figure: conceptual illustration of numpy arrays and descriptive statistics; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -104,65 +105,20 @@ The same formula can be applied to every observation in an array.
 
 NumPy provides multidimensional arrays and element-wise operations. Instead of processing every value through an explicit Python loop, an array operation can transform an entire collection.
 
+For example:
+
 ```python
-"""Task 02: NumPy arrays and descriptive statistics.
-
-Demonstrates array creation, element-wise operations, and descriptive
-statistics using NumPy's vectorized API.
-"""
-
-from __future__ import annotations
-
 import numpy as np
-from numpy.typing import NDArray
 
+temperatures_c = np.array([20, 22, 24, 23, 21], dtype=float)
 
-def compute_temperature_statistics(
-    temperatures_c: NDArray[np.floating],
-) -> dict[str, float | NDArray[np.floating]]:
-    """Compute descriptive statistics and convert Celsius to Fahrenheit.
-
-    Parameters
-    ----------
-    temperatures_c : NDArray[np.floating]
-        One-dimensional array of temperatures in degrees Celsius.
-
-    Returns
-    -------
-    dict[str, float | NDArray[np.floating]]
-        Dictionary containing mean, minimum, maximum, range, and the
-        converted Fahrenheit temperatures.
-    """
-    if temperatures_c.ndim != 1:
-        raise ValueError("Expected a 1-D array of temperatures.")
-
-    mean_c: float = float(np.mean(temperatures_c))
-    min_c: float = float(np.min(temperatures_c))
-    max_c: float = float(np.max(temperatures_c))
-    range_c: float = max_c - min_c
-
-    # Vectorized conversion: applies to every element without a Python loop.
-    temperatures_f: NDArray[np.floating] = temperatures_c * 9.0 / 5.0 + 32.0
-
-    return {
-        "mean_c": mean_c,
-        "min_c": min_c,
-        "max_c": max_c,
-        "range_c": range_c,
-        "temperatures_f": temperatures_f,
-    }
-
-
-if __name__ == "__main__":
-    observations_c = np.array([20.0, 22.0, 24.0, 23.0, 21.0])
-    stats = compute_temperature_statistics(observations_c)
-
-    print(f"Mean:  {stats['mean_c']:.1f} °C")
-    print(f"Min:   {stats['min_c']:.1f} °C")
-    print(f"Max:   {stats['max_c']:.1f} °C")
-    print(f"Range: {stats['range_c']:.1f} °C")
-    print(f"Fahrenheit: {stats['temperatures_f']}")
+mean_c = np.mean(temperatures_c)
+minimum_c = np.min(temperatures_c)
+maximum_c = np.max(temperatures_c)
+temperatures_f = temperatures_c * 9 / 5 + 32
 ```
+
+NumPy's broadcasting and array operations support concise computation, although their performance depends on the operation, array size, and memory requirements. See the [NumPy broadcasting documentation](https://numpy.org/doc/stable/user/basics.broadcasting.html).
 
 ### Interpretation and verification
 
@@ -176,8 +132,9 @@ Verification should include checking the calculated mean independently and confi
 
 ## Task 03 — Vectorisation and Performance Analysis
 
-![Vectorization performance](https://upload.wikimedia.org/wikipedia/commons/thumb/2/28/Vectorization_benchmark.svg/800px-Vectorization_benchmark.svg.png)  
-<sub>Figure: Illustrative speed-up from vectorized operations across array sizes. Vectorized NumPy operations frequently execute element-wise calculations in compiled code, reducing Python interpreter overhead.</sub>
+![Task 03: Vectorisation and benchmarking](docs/figures/task-03.svg)
+
+<sub>Figure: conceptual illustration of vectorisation and benchmarking; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -193,78 +150,24 @@ y_i=2x_i+1,\qquad i=1,\ldots,n.
 
 A loop evaluates the expression for each element individually. A vectorised operation expresses the same transformation over an entire array.
 
-### Computational method
+For example:
 
 ```python
-"""Task 03: Vectorisation and performance benchmarking.
-
-Compares explicit Python loops with NumPy vectorized operations and
-measures the speed-up ratio.
-"""
-
-from __future__ import annotations
-
-import time
-from typing import Callable
-
 import numpy as np
-from numpy.typing import NDArray
 
-
-def apply_loop(x: NDArray[np.floating]) -> NDArray[np.floating]:
-    """Apply y = 2x + 1 using an explicit Python loop."""
-    y = np.empty_like(x)
-    for i in range(len(x)):
-        y[i] = 2.0 * x[i] + 1.0
-    return y
-
-
-def apply_vectorized(x: NDArray[np.floating]) -> NDArray[np.floating]:
-    """Apply y = 2x + 1 using NumPy vectorization."""
-    return 2.0 * x + 1.0
-
-
-def benchmark(
-    func: Callable[[NDArray[np.floating]], NDArray[np.floating]],
-    x: NDArray[np.floating],
-    repeats: int = 7,
-) -> float:
-    """Return the median execution time over several runs.
-
-    Parameters
-    ----------
-    func : Callable
-        Function to benchmark.
-    x : NDArray[np.floating]
-        Input array.
-    repeats : int
-        Number of timing repetitions.
-
-    Returns
-    -------
-    float
-        Median wall-clock time in seconds.
-    """
-    times: list[float] = []
-    for _ in range(repeats):
-        start = time.perf_counter()
-        func(x)
-        times.append(time.perf_counter() - start)
-    return float(np.median(times))
-
-
-if __name__ == "__main__":
-    sizes = [1_000, 10_000, 100_000, 1_000_000]
-    print(f"{'Size':>10}  {'Loop (s)':>10}  {'Vec (s)':>10}  {'Speed-up':>10}")
-    print("-" * 46)
-
-    for n in sizes:
-        x = np.arange(1, n + 1, dtype=float)
-        t_loop = benchmark(apply_loop, x)
-        t_vec = benchmark(apply_vectorized, x)
-        speedup = t_loop / t_vec if t_vec > 0 else float("inf")
-        print(f"{n:>10}  {t_loop:>10.6f}  {t_vec:>10.6f}  {speedup:>10.2f}")
+x = np.arange(1, 6, dtype=float)
+y = 2 * x + 1
 ```
+
+The mathematical outputs are
+
+\[
+y=[3,5,7,9,11].
+\]
+
+The important distinction is not the mathematical result, which should be identical in this example, but the computational mechanism.
+
+Vectorised NumPy operations frequently execute their element-wise calculations in compiled code, reducing Python interpreter overhead.
 
 ### Performance measurement
 
@@ -276,6 +179,20 @@ S=\frac{t_{\text{loop}}}{t_{\text{vectorised}}},
 
 where \(t_{\text{loop}}\) and \(t_{\text{vectorised}}\) are the measured execution times.
 
+If a loop takes \(0.50\) seconds and an equivalent vectorised calculation takes \(0.10\) seconds, the illustrative speed-up is
+
+\[
+S=\frac{0.50}{0.10}=5.
+\]
+
+This means the vectorised version is five times as fast under those hypothetical measurements. These numbers demonstrate the calculation; they are not benchmark results from the submitted repository.
+
+### Experimental design
+
+A fair benchmark should use identical input data, equivalent operations, comparable execution conditions, and repeated measurements. Small operations may be dominated by timing overhead, while large arrays may be limited by memory bandwidth or allocation costs.
+
+Vectorisation can also create large temporary arrays, so a vectorised implementation is not automatically the most memory-efficient solution.
+
 ### Verification
 
 Confirm that both implementations return equivalent arrays using a tolerance-based comparison. Measure execution times separately and record the array size, software environment, and timing method.
@@ -286,8 +203,9 @@ Confirm that both implementations return equivalent arrays using a tolerance-bas
 
 ## Task 04 — Floating-Point Arithmetic and Numerical Stability
 
-![Floating point cancellation](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Loss_of_significance.svg/600px-Loss_of_significance.svg.png)  
-<sub>Figure: Loss of significance in floating-point arithmetic. Subtracting two nearly equal numbers can discard significant digits (catastrophic cancellation).</sub>
+![Task 04: Floating-point stability](docs/figures/task-04.svg)
+
+<sub>Figure: conceptual illustration of floating-point stability; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -296,6 +214,20 @@ To explain finite-precision arithmetic, rounding error, cancellation, and the ef
 ### Mathematical explanation
 
 Computers represent many real numbers approximately using finite-precision binary floating-point arithmetic. Decimal fractions such as \(0.1\) generally have no exact finite binary representation.
+
+Consequently, an expression such as
+
+```python
+0.1 + 0.2
+```
+
+may produce a value displayed as
+
+```text
+0.30000000000000004
+```
+
+This is a representation effect, not evidence that ordinary arithmetic is incorrect. Python documents these limitations in its [floating-point arithmetic guide](https://docs.python.org/3/tutorial/floatingpoint.html).
 
 Two important error measures are absolute error,
 
@@ -341,60 +273,9 @@ Simplifying,
 }
 \]
 
-for values where the expressions are defined. The second form avoids subtracting two nearly equal quantities and is often more accurate for small \(x\).
+for values where the expressions are defined.
 
-### Computational method
-
-```python
-"""Task 04: Floating-point stability and catastrophic cancellation.
-
-Compares two algebraically equivalent expressions for sqrt(1 + x) - 1
-and demonstrates how reformulation improves numerical accuracy for small x.
-"""
-
-from __future__ import annotations
-
-import numpy as np
-from numpy.typing import NDArray
-
-
-def naive_expression(x: NDArray[np.floating]) -> NDArray[np.floating]:
-    """Compute sqrt(1 + x) - 1 directly (susceptible to cancellation)."""
-    return np.sqrt(1.0 + x) - 1.0
-
-
-def stable_expression(x: NDArray[np.floating]) -> NDArray[np.floating]:
-    """Compute sqrt(1 + x) - 1 using the conjugate form (cancellation-free)."""
-    return x / (np.sqrt(1.0 + x) + 1.0)
-
-
-def relative_error(
-    computed: NDArray[np.floating],
-    reference: NDArray[np.floating],
-) -> NDArray[np.floating]:
-    """Compute element-wise relative error, guarding against division by zero."""
-    denominator = np.where(reference != 0.0, np.abs(reference), 1.0)
-    return np.abs(computed - reference) / denominator
-
-
-if __name__ == "__main__":
-    # Small values where cancellation is most severe.
-    x_values = np.array([1e-16, 1e-14, 1e-12, 1e-10, 1e-8], dtype=float)
-
-    # High-precision reference using the stable formula in float128.
-    x_ref = x_values.astype(np.longdouble)
-    reference = x_ref / (np.sqrt(1.0 + x_ref) + 1.0)
-
-    naive = naive_expression(x_values)
-    stable = stable_expression(x_values)
-
-    print(f"{'x':>10}  {'Naive rel err':>15}  {'Stable rel err':>15}")
-    print("-" * 44)
-    for i, xi in enumerate(x_values):
-        err_naive = relative_error(naive[i], reference[i])
-        err_stable = relative_error(stable[i], reference[i])
-        print(f"{xi:>10.0e}  {err_naive:>15.6e}  {err_stable:>15.6e}")
-```
+The second form avoids subtracting two nearly equal quantities and is often more accurate for small \(x\).
 
 ### Sensitivity and stability
 
@@ -402,14 +283,19 @@ A problem is ill-conditioned when small changes in its input can produce large c
 
 These are distinct concepts: a stable algorithm cannot remove the intrinsic sensitivity of an ill-conditioned problem.
 
+### Verification
+
+Evaluate both algebraic forms over a range of small and moderate values, comparing them with a higher-precision reference where necessary. Inspect absolute and relative error rather than relying solely on printed decimal digits.
+
 **Conclusion:** numerical accuracy depends on the representation of numbers, the conditioning of the problem, and the stability of the chosen algorithm.
 
 ---
 
 ## Task 05 — Matrix Algebra and Geometric Transformations
 
-![Matrix rotation](https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Euler2a.gif/400px-Euler2a.gif)  
-<sub>Figure: Geometric rotation of a coordinate frame. A rotation matrix preserves area and orientation (\(\det(R) = 1\)).</sub>
+![Task 05: Matrix transformations](docs/figures/task-05.svg)
+
+<sub>Figure: conceptual illustration of matrix transformations; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -486,65 +372,6 @@ The order matters because, in general,
 RS\ne SR.
 \]
 
-### Computational method
-
-```python
-"""Task 05: Matrix algebra and geometric transformations.
-
-Demonstrates rotation and scaling matrices, composition order, and
-determinant-based area preservation checks.
-"""
-
-from __future__ import annotations
-
-import numpy as np
-from numpy.typing import NDArray
-
-
-def rotation_matrix(theta_rad: float) -> NDArray[np.floating]:
-    """Return a 2×2 counterclockwise rotation matrix."""
-    c, s = np.cos(theta_rad), np.sin(theta_rad)
-    return np.array([[c, -s], [s, c]], dtype=float)
-
-
-def scaling_matrix(sx: float, sy: float) -> NDArray[np.floating]:
-    """Return a 2×2 non-uniform scaling matrix."""
-    return np.array([[sx, 0.0], [0.0, sy]], dtype=float)
-
-
-def transform_point(
-    matrix: NDArray[np.floating],
-    point: NDArray[np.floating],
-) -> NDArray[np.floating]:
-    """Apply a linear transformation to a 2-D point."""
-    return matrix @ point
-
-
-if __name__ == "__main__":
-    point = np.array([2.0, 1.0])
-
-    # 90° counterclockwise rotation.
-    theta = np.pi / 2.0
-    R = rotation_matrix(theta)
-    rotated = transform_point(R, point)
-    print(f"Rotated point (90° CCW): {rotated}")  # [-1, 2]
-
-    # Scaling: 2× in x, 3× in y.
-    S = scaling_matrix(2.0, 3.0)
-    scaled = transform_point(S, point)
-    print(f"Scaled point (2×, 3×):    {scaled}")  # [4, 3]
-
-    # Composition: rotation after scaling.
-    T = R @ S
-    composed = transform_point(T, point)
-    print(f"Composed (R @ S):        {composed}")
-
-    # Verify determinant identities.
-    print(f"det(R) = {np.linalg.det(R):.6f}")  # 1.0
-    print(f"det(S) = {np.linalg.det(S):.6f}")  # 6.0
-    print(f"det(T) = {np.linalg.det(T):.6f}")  # 6.0
-```
-
 ### Geometric properties
 
 The determinant of the rotation matrix is
@@ -561,11 +388,19 @@ This means a rotation preserves area and orientation. The scaling transformation
 
 If \(s_x=2\) and \(s_y=3\), the transformed area is six times the original area.
 
+### Verification
+
+Test transformations on known points and confirm the determinant identities. Check the order of multiplication carefully and distinguish angles measured in degrees from those measured in radians.
+
 **Conclusion:** matrices provide a compact, composable representation of geometric transformations and make their mathematical properties straightforward to verify.
 
 ---
 
 ## Task 06 — Solving Systems of Linear Equations
+
+![Task 06: Linear systems](docs/figures/task-06.svg)
+
+<sub>Figure: conceptual illustration of linear systems; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -609,69 +444,17 @@ Therefore,
 \boxed{x=2,\quad y=1}.
 \]
 
-### Computational method
+In matrix form,
 
-```python
-"""Task 06: Solving linear systems with residual verification.
-
-Uses NumPy's linear solver (LAPACK-backed) and checks the residual
-norm alongside application-domain feasibility.
-"""
-
-from __future__ import annotations
-
-import numpy as np
-from numpy.typing import NDArray
-
-
-def solve_linear_system(
-    A: NDArray[np.floating],
-    b: NDArray[np.floating],
-) -> NDArray[np.floating]:
-    """Solve A x = b using a direct numerical linear solver.
-
-    Parameters
-    ----------
-    A : NDArray[np.floating]
-        Coefficient matrix of shape (n, n).
-    b : NDArray[np.floating]
-        Right-hand-side vector of shape (n,).
-
-    Returns
-    -------
-    NDArray[np.floating]
-        Solution vector x.
-    """
-    # np.linalg.solve uses LU decomposition with partial pivoting.
-    # It is preferred over explicitly computing A^{-1}.
-    return np.linalg.solve(A, b)
-
-
-def residual_norm(
-    A: NDArray[np.floating],
-    x: NDArray[np.floating],
-    b: NDArray[np.floating],
-) -> float:
-    """Return the Euclidean norm of the residual b - A x."""
-    return float(np.linalg.norm(b - A @ x))
-
-
-if __name__ == "__main__":
-    A = np.array([[2.0, 1.0], [1.0, -1.0]])
-    b = np.array([5.0, 1.0])
-
-    x = solve_linear_system(A, b)
-    print(f"Solution: x = {x}")  # [2, 1]
-
-    r_norm = residual_norm(A, x, b)
-    print(f"Residual norm: {r_norm:.2e}")
-
-    # Application constraint check: variables must be non-negative.
-    if np.any(x < 0):
-        print("WARNING: solution violates non-negativity constraint.")
-    else:
-        print("Non-negativity constraint satisfied.")
-```
+\[
+\begin{bmatrix}
+2&1\\
+1&-1
+\end{bmatrix}
+\begin{bmatrix}x\\y\end{bmatrix}
+=
+\begin{bmatrix}5\\1\end{bmatrix}.
+\]
 
 ### Numerical solution and residual
 
@@ -685,14 +468,27 @@ r=b-A\hat x.
 
 A small residual indicates that the computed solution approximately satisfies the supplied equations.
 
+However, a small residual does not guarantee a small error in \(\hat x\) when \(A\) is ill-conditioned.
+
+### Application constraints
+
+In resource-allocation problems, a mathematically valid solution may still be operationally invalid. For example, a solution of \(x=2.4\) machines is not feasible if machines must be counted as whole units.
+
+Such problems may require non-negativity constraints or integer optimisation.
+
+### Verification
+
+Substitute the solution into the original equations, calculate the residual norm, and check the domain of the variables.
+
 **Conclusion:** a linear solver must be assessed through equation satisfaction and application constraints, not merely successful execution.
 
 ---
 
 ## Task 07 — LU Decomposition
 
-![LU decomposition](https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/Diagonalization_as_rotation.gif/400px-Diagonalization_as_rotation.gif)  
-<sub>Figure: Matrix factorization as a change of basis. LU decomposition factors \(A = LU\) into lower and upper triangular matrices, enabling efficient repeated solves.</sub>
+![Task 07: LU decomposition](docs/figures/task-07.svg)
+
+<sub>Figure: conceptual illustration of lu decomposition; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -734,64 +530,79 @@ Ux=y
 
 using backward substitution.
 
-### Computational method
+### Worked example
 
-```python
-"""Task 07: LU decomposition and repeated linear solves.
+Consider
 
-Demonstrates LU factorization and verifies the factorization identity
-PA = LU, then solves a system using the factors.
-"""
+\[
+A=
+\begin{bmatrix}
+2&1\\
+4&3
+\end{bmatrix}.
+\]
 
-from __future__ import annotations
+One LU factorisation without pivoting is
 
-import numpy as np
-from numpy.typing import NDArray
-from scipy.linalg import lu, lu_factor, lu_solve
+\[
+L=
+\begin{bmatrix}
+1&0\\
+2&1
+\end{bmatrix},
+\qquad
+U=
+\begin{bmatrix}
+2&1\\
+0&1
+\end{bmatrix}.
+\]
 
+Multiplication verifies that
 
-def verify_lu_factorization(
-    A: NDArray[np.floating],
-) -> tuple[NDArray[np.floating], NDArray[np.floating], NDArray[np.floating]]:
-    """Factorize A = P L U and return the factors.
+\[
+LU=
+\begin{bmatrix}
+2&1\\
+4&3
+\end{bmatrix}=A.
+\]
 
-    Parameters
-    ----------
-    A : NDArray[np.floating]
-        Square matrix.
+Suppose
 
-    Returns
-    -------
-    tuple[NDArray, NDArray, NDArray]
-        Permutation matrix P, lower-triangular L, and upper-triangular U.
-    """
-    P, L, U = lu(A)
-    # Verify the factorization: P @ A should equal L @ U.
-    assert np.allclose(P @ A, L @ U, atol=1e-12)
-    return P, L, U
+\[
+b=
+\begin{bmatrix}5\\11\end{bmatrix}.
+\]
 
+Forward substitution gives
 
-if __name__ == "__main__":
-    A = np.array([[2.0, 1.0], [4.0, 3.0]])
-    b = np.array([5.0, 11.0])
+\[
+y_1=5,\qquad 2y_1+y_2=11,
+\]
 
-    # Factorize and verify.
-    P, L, U = verify_lu_factorization(A)
-    print("L =\n", L)
-    print("U =\n", U)
+so \(y_2=1\).
 
-    # Solve using the LU factors (reusable for multiple right-hand sides).
-    lu_piv = lu_factor(A)
-    x = lu_solve(lu_piv, b)
-    print(f"Solution: x = {x}")  # [2, 1]
+Backward substitution gives
 
-    residual = np.linalg.norm(b - A @ x)
-    print(f"Residual: {residual:.2e}")
-```
+\[
+x_2=1,\qquad 2x_1+x_2=5,
+\]
+
+so \(x_1=2\). Therefore,
+
+\[
+x=
+\begin{bmatrix}2\\1\end{bmatrix}.
+\]
 
 ### Computational advantage
 
 When several right-hand sides share the same matrix \(A\), its factorisation can be reused. This avoids repeating the more expensive factorisation stage for every new vector \(b\).
+
+### Verification
+
+Check that \(PA=LU\), solve each system, and evaluate its residual. Pivoting should be considered when zero or small pivots may cause numerical difficulties.
 
 **Conclusion:** LU decomposition is particularly valuable when a fixed matrix must be used to solve multiple linear systems.
 
@@ -799,8 +610,9 @@ When several right-hand sides share the same matrix \(A\), its factorisation can
 
 ## Task 08 — Iterative Linear Solvers: Jacobi and Gauss–Seidel
 
-![Jacobi vs Gauss-Seidel convergence](https://upload.wikimedia.org/wikipedia/commons/thumb/3/3a/Jacobi_vs_Gauss-Seidel_Convergence.svg/800px-Jacobi_vs_Gauss-Seidel_Convergence.svg.png)  
-<sub>Figure: Convergence comparison of Jacobi and Gauss–Seidel iterations on a diagonally dominant system. Gauss–Seidel typically converges faster because it uses updated values immediately.</sub>
+![Task 08: Jacobi and Gauss–Seidel](docs/figures/task-08.svg)
+
+<sub>Figure: conceptual illustration of jacobi and gauss–seidel; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -848,101 +660,45 @@ b_i
 \right).
 \]
 
-### Computational method
+### Worked example
 
-```python
-"""Task 08: Jacobi and Gauss–Seidel iterative solvers.
+Consider
 
-Implements both methods from scratch and records the residual history
-to compare convergence behaviour.
-"""
+\[
+4x+y=9,
+\]
 
-from __future__ import annotations
+\[
+x+3y=7.
+\]
 
-from dataclasses import dataclass
+Rearranging,
 
-import numpy as np
-from numpy.typing import NDArray
+\[
+x=\frac{9-y}{4},
+\qquad
+y=\frac{7-x}{3}.
+\]
 
+Starting from \(x^{(0)}=0\), \(y^{(0)}=0\), the first Jacobi iteration gives
 
-@dataclass(frozen=True)
-class IterativeResult:
-    """Container for iterative solver output."""
-    solution: NDArray[np.floating]
-    residual_history: list[float]
-    iterations: int
-    converged: bool
+\[
+x^{(1)}=\frac94=2.25,
+\qquad
+y^{(1)}=\frac73\approx2.3333.
+\]
 
+The first Gauss–Seidel iteration updates \(x\) first and then uses that new value to calculate \(y\):
 
-def jacobi_solve(
-    A: NDArray[np.floating],
-    b: NDArray[np.floating],
-    x0: NDArray[np.floating] | None = None,
-    tol: float = 1e-10,
-    max_iter: int = 500,
-) -> IterativeResult:
-    """Solve A x = b using the Jacobi iteration method."""
-    n = len(b)
-    x = np.zeros(n) if x0 is None else x0.copy()
-    D = np.diag(A)
-    if np.any(np.abs(D) < np.finfo(float).eps):
-        raise ValueError("Zero diagonal entry detected; Jacobi cannot proceed.")
+\[
+x^{(1)}=2.25,
+\]
 
-    R = A - np.diag(D)  # Off-diagonal part.
-    history: list[float] = []
+\[
+y^{(1)}=\frac{7-2.25}{3}\approx1.5833.
+\]
 
-    for k in range(max_iter):
-        x_new = (b - R @ x) / D
-        res = float(np.linalg.norm(b - A @ x_new))
-        history.append(res)
-        if res < tol:
-            return IterativeResult(x_new, history, k + 1, True)
-        x = x_new
-
-    return IterativeResult(x, history, max_iter, False)
-
-
-def gauss_seidel_solve(
-    A: NDArray[np.floating],
-    b: NDArray[np.floating],
-    x0: NDArray[np.floating] | None = None,
-    tol: float = 1e-10,
-    max_iter: int = 500,
-) -> IterativeResult:
-    """Solve A x = b using the Gauss–Seidel iteration method."""
-    n = len(b)
-    x = np.zeros(n) if x0 is None else x0.copy()
-    history: list[float] = []
-
-    for k in range(max_iter):
-        x_old = x.copy()
-        for i in range(n):
-            sigma = 0.0
-            for j in range(n):
-                if j != i:
-                    sigma += A[i, j] * x[j]  # Uses updated values immediately.
-            if abs(A[i, i]) < np.finfo(float).eps:
-                raise ValueError(f"Zero diagonal at row {i}.")
-            x[i] = (b[i] - sigma) / A[i, i]
-
-        res = float(np.linalg.norm(b - A @ x))
-        history.append(res)
-        if res < tol:
-            return IterativeResult(x, history, k + 1, True)
-
-    return IterativeResult(x, history, max_iter, False)
-
-
-if __name__ == "__main__":
-    A = np.array([[4.0, 1.0], [1.0, 3.0]])
-    b = np.array([9.0, 7.0])
-
-    jac = jacobi_solve(A, b)
-    gs = gauss_seidel_solve(A, b)
-
-    print(f"Jacobi:      x = {jac.solution}, iterations = {jac.iterations}")
-    print(f"Gauss–Seidel: x = {gs.solution}, iterations = {gs.iterations}")
-```
+The different second components illustrate how the methods use information differently. One iteration alone is not sufficient to establish which method converges faster for every problem.
 
 ### Convergence
 
@@ -956,14 +712,19 @@ A stopping criterion can be based on
 
 where \(\varepsilon\) is a chosen tolerance.
 
+### Verification
+
+Compare the final approximation with a direct solution, record the residual norm over iterations, and confirm that the stopping rule is satisfied.
+
 **Conclusion:** iterative methods can be useful for large systems, but convergence and accuracy must be demonstrated rather than assumed.
 
 ---
 
 ## Task 09 — Eigenvalues, Eigenvectors, and Network Centrality
 
-![Eigenvector centrality](https://upload.wikimedia.org/wikipedia/commons/thumb/8/8c/Eigenvector_centrality.svg/500px-Eigenvector_centrality.svg.png)  
-<sub>Figure: Eigenvector centrality in a network. Nodes with higher centrality scores (larger circles) are connected to other important nodes.</sub>
+![Task 09: Eigenvalues and network centrality](docs/figures/task-09.svg)
+
+<sub>Figure: conceptual illustration of eigenvalues and network centrality; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1018,90 +779,7 @@ Ac=\lambda c,
 
 where \(c\) contains the centrality scores.
 
-### Computational method
-
-```python
-"""Task 09: Eigenvalues, eigenvectors, and network centrality.
-
-Computes eigenvalues/eigenvectors of a symmetric matrix and derives
-eigenvector centrality scores from an adjacency matrix.
-"""
-
-from __future__ import annotations
-
-import numpy as np
-from numpy.typing import NDArray
-
-
-def eigen_decomposition(
-    A: NDArray[np.floating],
-) -> tuple[NDArray[np.floating], NDArray[np.floating]]:
-    """Return eigenvalues and eigenvectors of a square matrix.
-
-    Uses np.linalg.eigh for symmetric matrices, which guarantees real
-    eigenvalues and orthonormal eigenvectors.
-    """
-    eigenvalues, eigenvectors = np.linalg.eigh(A)
-    # Sort in descending order of eigenvalue.
-    idx = np.argsort(eigenvalues)[::-1]
-    return eigenvalues[idx], eigenvectors[:, idx]
-
-
-def eigenvector_centrality(
-    adjacency: NDArray[np.floating],
-    max_iter: int = 1000,
-    tol: float = 1e-12,
-) -> NDArray[np.floating]:
-    """Compute eigenvector centrality via power iteration.
-
-    Parameters
-    ----------
-    adjacency : NDArray[np.floating]
-        Symmetric adjacency matrix of the graph.
-    max_iter : int
-        Maximum number of power iterations.
-    tol : float
-        Convergence tolerance on the centrality vector.
-
-    Returns
-    -------
-    NDArray[np.floating]
-        Non-negative centrality vector normalized to unit Euclidean norm.
-    """
-    n = adjacency.shape[0]
-    c = np.ones(n) / np.sqrt(n)
-
-    for _ in range(max_iter):
-        c_new = adjacency @ c
-        norm = np.linalg.norm(c_new)
-        if norm < np.finfo(float).eps:
-            raise ValueError("Adjacency matrix has zero spectral radius.")
-        c_new /= norm
-        if np.linalg.norm(c_new - c) < tol:
-            return c_new
-        c = c_new
-
-    return c
-
-
-if __name__ == "__main__":
-    # Simple diagonal matrix: eigenvalues are the diagonal entries.
-    A_diag = np.diag([2.0, 3.0])
-    vals, vecs = eigen_decomposition(A_diag)
-    print(f"Eigenvalues: {vals}")
-    print(f"First eigenvector: {vecs[:, 0]}")
-
-    # Small example graph (undirected).
-    adjacency = np.array([
-        [0, 1, 0, 0],
-        [1, 0, 1, 1],
-        [0, 1, 0, 1],
-        [0, 1, 1, 0],
-    ], dtype=float)
-    centrality = eigenvector_centrality(adjacency)
-    print(f"Eigenvector centrality: {centrality}")
-    print(f"Highest centrality node: {np.argmax(centrality)}")
-```
+For directed networks, interpretation depends on the direction of edges and the particular centrality formulation. Eigenvector centrality should not be treated as identical to PageRank, which uses a different model and typically includes damping and transition probabilities.
 
 ### Verification
 
@@ -1119,8 +797,9 @@ and check that \(\|r\|\) is sufficiently small. Eigenvectors may be normalised t
 
 ## Task 10 — Bisection and Fixed-Point Iteration
 
-![Bisection method](https://upload.wikimedia.org/wikipedia/commons/thumb/9/9a/Bisection_method.svg/600px-Bisection_method.svg.png)  
-<sub>Figure: The bisection method iteratively narrows a bracket containing a root. The interval width halves with each iteration, giving a predictable error bound.</sub>
+![Task 10: Bisection and fixed-point iteration](docs/figures/task-10.svg)
+
+<sub>Figure: conceptual illustration of bisection and fixed-point iteration; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1164,91 +843,33 @@ m=\frac{a+b}{2}.
 
 The algorithm evaluates \(f(m)\) and retains the half-interval that contains the sign change.
 
-### Computational method
+After \(n\) iterations, the interval width is
 
-```python
-"""Task 10: Bisection and fixed-point iteration for nonlinear root finding.
+\[
+\frac{b_0-a_0}{2^n}.
+\]
 
-Implements the bisection method (bracketing) and fixed-point iteration
-and compares their convergence behaviour on a cooling equilibrium model.
-"""
+Thus, bisection has a predictable error bound when its assumptions hold.
 
-from __future__ import annotations
+### Fixed-point iteration
 
-from dataclasses import dataclass
-from typing import Callable
+A fixed-point method rewrites the equation as
 
+\[
+T=g(T)
+\]
 
-@dataclass(frozen=True)
-class RootResult:
-    """Container for root-finding output."""
-    root: float
-    iterations: int
-    residual: float
-    converged: bool
+and iterates
 
+\[
+T_{n+1}=g(T_n).
+\]
 
-def bisection(
-    f: Callable[[float], float],
-    a: float,
-    b: float,
-    tol: float = 1e-10,
-    max_iter: int = 200,
-) -> RootResult:
-    """Find a root of f in [a, b] using the bisection method.
+A common convergence condition is that \(|g'(T)|<1\) in a suitable neighbourhood of the fixed point. This is a sufficient local condition, not a universal guarantee.
 
-    Requires f(a) and f(b) to have opposite signs.
-    """
-    fa, fb = f(a), f(b)
-    if fa * fb >= 0:
-        raise ValueError(
-            f"Bisection requires a sign change: f({a})={fa:.4f}, f({b})={fb:.4f}"
-        )
+### Comparison
 
-    for k in range(max_iter):
-        m = 0.5 * (a + b)
-        fm = f(m)
-        if abs(fm) < tol or (b - a) / 2.0 < tol:
-            return RootResult(m, k + 1, abs(fm), True)
-        if fa * fm < 0:
-            b, fb = m, fm
-        else:
-            a, fa = m, fm
-
-    m = 0.5 * (a + b)
-    return RootResult(m, max_iter, abs(f(m)), False)
-
-
-def fixed_point_iteration(
-    g: Callable[[float], float],
-    x0: float,
-    tol: float = 1e-10,
-    max_iter: int = 200,
-) -> RootResult:
-    """Find a fixed point of g using the iteration x_{n+1} = g(x_n)."""
-    x = x0
-    for k in range(max_iter):
-        x_new = g(x)
-        if abs(x_new - x) < tol:
-            return RootResult(x_new, k + 1, abs(x_new - x), True)
-        x = x_new
-    return RootResult(x, max_iter, abs(x - g(x)), False)
-
-
-if __name__ == "__main__":
-    # Cooling equilibrium: f(T) = T - 25 - 10 exp(-T/20).
-    f = lambda T: T - 25.0 - 10.0 * np.exp(-T / 20.0)
-
-    result = bisection(f, 25.0, 35.0)
-    print(f"Bisection root: T ≈ {result.root:.6f} °C")
-    print(f"Iterations: {result.iterations}, residual: {result.residual:.2e}")
-
-    # Fixed-point form: T = 25 + 10 exp(-T/20).
-    g = lambda T: 25.0 + 10.0 * np.exp(-T / 20.0)
-    fp_result = fixed_point_iteration(g, 30.0)
-    print(f"Fixed-point root: T ≈ {fp_result.root:.6f} °C")
-    print(f"Iterations: {fp_result.iterations}, residual: {fp_result.residual:.2e}")
-```
+Bisection is robust when a valid bracket is available. Fixed-point iteration may be simpler or faster for a suitable mapping, but convergence depends on the choice of \(g\) and the starting value.
 
 ### Verification
 
@@ -1259,6 +880,10 @@ Confirm the initial sign change for bisection, calculate the final residual \(|f
 ---
 
 ## Task 11 — Newton's Method, Secant Method, and Internal Rate of Return
+
+![Task 11: Newton, secant and internal rate of return](docs/figures/task-11.svg)
+
+<sub>Figure: conceptual illustration of newton, secant and internal rate of return; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1274,6 +899,8 @@ x_{n+1}=x_n-\frac{f(x_n)}{f'(x_n)}.
 
 The formula comes from approximating \(f\) locally by its tangent line and using the tangent's intercept as the next estimate.
 
+Newton's method can converge rapidly near a suitable simple root. However, it may fail when the derivative is zero or very small, when the starting estimate is poor, or when the iteration leaves the relevant region.
+
 ### Secant method
 
 The secant method approximates the derivative using two previous points:
@@ -1284,6 +911,8 @@ x_{n+1}
 x_n-f(x_n)
 \frac{x_n-x_{n-1}}{f(x_n)-f(x_{n-1})}.
 \]
+
+It avoids calculating the analytical derivative but still depends on suitable initial estimates and function behaviour.
 
 ### Financial application: internal rate of return
 
@@ -1298,94 +927,45 @@ The internal rate of return is a discount rate \(r\) that satisfies
 
 where \(CF_t\) denotes the cash flow at time \(t\).
 
-### Computational method
+Consider an investment costing 100 units initially and returning 110 units after one period:
 
-```python
-"""Task 11: Newton and secant methods for root finding.
+\[
+\operatorname{NPV}(r)=-100+\frac{110}{1+r}.
+\]
 
-Implements both methods and applies them to an IRR calculation.
-"""
+Setting NPV equal to zero gives
 
-from __future__ import annotations
+\[
+-100+\frac{110}{1+r}=0.
+\]
 
-from typing import Callable
+Therefore,
 
-import numpy as np
+\[
+1+r=1.1
+\quad\Longrightarrow\quad
+\boxed{r=0.10=10\%}.
+\]
 
-
-def newton_method(
-    f: Callable[[float], float],
-    df: Callable[[float], float],
-    x0: float,
-    tol: float = 1e-12,
-    max_iter: int = 100,
-) -> float:
-    """Find a root using Newton–Raphson iteration."""
-    x = x0
-    for _ in range(max_iter):
-        fx = f(x)
-        if abs(fx) < tol:
-            return x
-        dfx = df(x)
-        if abs(dfx) < np.finfo(float).eps:
-            raise ZeroDivisionError(f"Derivative vanished at x = {x}.")
-        x -= fx / dfx
-    raise RuntimeError("Newton method did not converge within max_iter.")
-
-
-def secant_method(
-    f: Callable[[float], float],
-    x0: float,
-    x1: float,
-    tol: float = 1e-12,
-    max_iter: int = 100,
-) -> float:
-    """Find a root using the secant method (derivative-free)."""
-    for _ in range(max_iter):
-        f0, f1 = f(x0), f(x1)
-        if abs(f1) < tol:
-            return x1
-        if abs(f1 - f0) < np.finfo(float).eps:
-            raise ZeroDivisionError("Secant denominator vanished.")
-        x2 = x1 - f1 * (x1 - x0) / (f1 - f0)
-        x0, x1 = x1, x2
-    raise RuntimeError("Secant method did not converge within max_iter.")
-
-
-def npv(
-    rate: float,
-    cash_flows: list[float],
-) -> float:
-    """Compute net present value for a series of cash flows."""
-    return sum(
-        cf / (1.0 + rate) ** t for t, cf in enumerate(cash_flows)
-    )
-
-
-if __name__ == "__main__":
-    # One-period investment: cost 100, return 110.
-    cash_flows = [-100.0, 110.0]
-
-    f = lambda r: npv(r, cash_flows)
-    df = lambda r: -110.0 / (1.0 + r) ** 2  # Analytical derivative.
-
-    r_newton = newton_method(f, df, 0.05)
-    r_secant = secant_method(f, 0.05, 0.15)
-
-    print(f"IRR (Newton): r = {r_newton:.6f} = {r_newton * 100:.2f}%")
-    print(f"IRR (Secant): r = {r_secant:.6f} = {r_secant * 100:.2f}%")
-    print(f"NPV at Newton root: {f(r_newton):.2e}")
-```
+This is an exact result for the illustrative one-period investment.
 
 ### Important limitation
 
 For cash flows that change sign more than once, the NPV equation may have multiple roots or no economically meaningful root. A numerical solver's output must therefore be interpreted in the context of the cash-flow pattern.
+
+### Verification
+
+Substitute the estimated discount rate into the NPV equation and check that the residual is close to zero. Also verify that \(r>-1\) when the standard discounting formula requires positive \(1+r\).
 
 **Conclusion:** Newton and secant methods are useful for nonlinear financial equations, but convergence and economic interpretation remain essential.
 
 ---
 
 ## Task 12 — Solving Nonlinear Systems
+
+![Task 12: Nonlinear systems](docs/figures/task-12.svg)
+
+<sub>Figure: conceptual illustration of nonlinear systems; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1459,58 +1039,21 @@ and
 (x,y)\approx(-1.517,1.303).
 \]
 
-### Computational method
+These values are rounded illustrations of the algebraic solutions.
 
-```python
-"""Task 12: Solving nonlinear systems.
+### Numerical formulation
 
-Uses scipy.optimize.fsolve to find intersections of a circle and a
-parabola, demonstrating multiple solutions and initial-guess sensitivity.
-"""
+Define the residual vector
 
-from __future__ import annotations
+\[
+F(x,y)=
+\begin{bmatrix}
+x^2+y^2-4\\
+y-x^2+1
+\end{bmatrix}.
+\]
 
-import numpy as np
-from numpy.typing import NDArray
-from scipy.optimize import fsolve
-
-
-def nonlinear_system(
-    variables: NDArray[np.floating],
-) -> tuple[float, float]:
-    """Residual vector for the circle–parabola intersection problem.
-
-    Equations:
-        x^2 + y^2 - 4 = 0
-        y - x^2 + 1 = 0
-    """
-    x, y = variables
-    return (x**2 + y**2 - 4.0, y - x**2 + 1.0)
-
-
-def find_all_intersections() -> list[NDArray[np.floating]]:
-    """Locate both intersection points using distinct initial guesses."""
-    guesses = [
-        np.array([2.0, 2.0]),   # Upper-right quadrant.
-        np.array([-2.0, 2.0]),  # Upper-left quadrant.
-    ]
-    solutions: list[NDArray[np.floating]] = []
-
-    for guess in guesses:
-        sol, info, ier, msg = fsolve(nonlinear_system, guess, full_output=True)
-        if ier != 1:
-            raise RuntimeError(f"Solver failed: {msg}")
-        residual = np.linalg.norm(nonlinear_system(sol))
-        print(f"Guess {guess} -> solution {sol}, residual {residual:.2e}")
-        solutions.append(sol)
-
-    return solutions
-
-
-if __name__ == "__main__":
-    solutions = find_all_intersections()
-    print(f"\nNumber of intersections found: {len(solutions)}")
-```
+A numerical nonlinear solver seeks a point for which both components are approximately zero.
 
 ### Initial guesses and verification
 
@@ -1523,6 +1066,10 @@ Every candidate should be substituted into both original equations. Graphical in
 ---
 
 ## Task 13 — Interpolation and Cubic Splines
+
+![Task 13: Interpolation and cubic splines](docs/figures/task-13.svg)
+
+<sub>Figure: conceptual illustration of interpolation and cubic splines; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1537,6 +1084,14 @@ y(x)=y_0+
 \frac{x-x_0}{x_1-x_0}(y_1-y_0).
 \]
 
+Suppose a sensor records \(10\) units at time \(0\) and \(20\) units at time \(4\). The estimated value at time \(2\) is
+
+\[
+y(2)=10+\frac{2-0}{4-0}(20-10)=15.
+\]
+
+This is an interpolation estimate, not necessarily the true physical measurement at time \(2\).
+
 ### Cubic spline interpolation
 
 A cubic spline represents each interval using a cubic polynomial,
@@ -1545,71 +1100,29 @@ A cubic spline represents each interval using a cubic polynomial,
 S_i(x)=a_i+b_i(x-x_i)+c_i(x-x_i)^2+d_i(x-x_i)^3.
 \]
 
-### Computational method
+The coefficients are chosen to satisfy interpolation conditions and suitable continuity constraints. Standard cubic splines are constructed to maintain continuity of the function and its first and second derivatives at internal knots.
 
-```python
-"""Task 13: Interpolation and cubic splines.
-
-Compares linear interpolation with cubic spline interpolation on a
-small set of sensor measurements.
-"""
-
-from __future__ import annotations
-
-import numpy as np
-from numpy.typing import NDArray
-from scipy.interpolate import CubicSpline, interp1d
-
-
-def linear_interpolate(
-    x_data: NDArray[np.floating],
-    y_data: NDArray[np.floating],
-    x_query: NDArray[np.floating],
-) -> NDArray[np.floating]:
-    """Perform piecewise linear interpolation."""
-    interpolator = interp1d(x_data, y_data, kind="linear")
-    return interpolator(x_query)
-
-
-def cubic_spline_interpolate(
-    x_data: NDArray[np.floating],
-    y_data: NDArray[np.floating],
-    x_query: NDArray[np.floating],
-) -> NDArray[np.floating]:
-    """Perform cubic spline interpolation with natural boundary conditions."""
-    spline = CubicSpline(x_data, y_data, bc_type="natural")
-    return spline(x_query)
-
-
-if __name__ == "__main__":
-    # Sensor data: time (s) vs. measurement (units).
-    time = np.array([0.0, 4.0, 8.0, 12.0])
-    measurement = np.array([10.0, 20.0, 15.0, 25.0])
-
-    query_time = np.array([2.0, 6.0, 10.0])
-
-    linear = linear_interpolate(time, measurement, query_time)
-    spline = cubic_spline_interpolate(time, measurement, query_time)
-
-    print(f"Query times: {query_time}")
-    print(f"Linear:      {linear}")
-    print(f"Spline:      {spline}")
-
-    # Verify interpolation at knots.
-    at_knots = cubic_spline_interpolate(time, measurement, time)
-    assert np.allclose(at_knots, measurement), "Spline must reproduce data at knots."
-    print("Spline reproduces data at knots: OK")
-```
+Boundary conditions, such as natural or clamped conditions, affect the resulting spline.
 
 ### Comparison
 
 Linear interpolation is simple and locally transparent. Cubic splines can produce smoother curves but may overshoot between data points, particularly when the data vary sharply.
+
+Neither method should be assumed to recover the true underlying function without further information.
+
+### Verification
+
+Check that the interpolant reproduces the supplied data at every knot. Where a reference function or independent observations exist, calculate interpolation errors at additional points.
 
 **Conclusion:** interpolation provides estimates between observations, but the method should reflect the smoothness and behaviour expected of the underlying process.
 
 ---
 
 ## Task 14 — Curve Fitting and Regression
+
+![Task 14: Regression and curve fitting](docs/figures/task-14.svg)
+
+<sub>Figure: conceptual illustration of regression and curve fitting; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1633,6 +1146,8 @@ For observations \((x_i,y_i)\), the sum of squared errors is
 \sum_{i=1}^{n}(y_i-\hat y_i)^2.
 \]
 
+Least squares chooses the coefficients that minimise this quantity.
+
 The root-mean-square error is
 
 \[
@@ -1642,56 +1157,13 @@ The root-mean-square error is
 \sum_{i=1}^{n}(y_i-\hat y_i)^2}.
 \]
 
-### Computational method
+RMSE measures the typical scale of the residuals in the units of the response variable. It should not be interpreted independently of the scale and variability of the data.
 
-```python
-"""Task 14: Curve fitting and regression.
+### Illustrative application
 
-Fits a quadratic polynomial to synthetic server response-time data
-using least squares and evaluates residuals and RMSE.
-"""
+Suppose a server's measured response time rises as the number of simultaneous users increases. A quadratic curve may describe the observed pattern over a limited range.
 
-from __future__ import annotations
-
-import numpy as np
-from numpy.typing import NDArray
-
-
-def fit_polynomial(
-    x: NDArray[np.floating],
-    y: NDArray[np.floating],
-    degree: int = 2,
-) -> NDArray[np.floating]:
-    """Fit a polynomial of the given degree using least squares.
-
-    Returns the coefficient vector in descending order of power.
-    """
-    return np.polyfit(x, y, deg=degree)
-
-
-def compute_rmse(
-    y_true: NDArray[np.floating],
-    y_pred: NDArray[np.floating],
-) -> float:
-    """Return the root-mean-square error between true and predicted values."""
-    return float(np.sqrt(np.mean((y_true - y_pred) ** 2)))
-
-
-if __name__ == "__main__":
-    # Synthetic data: response time vs. concurrent users.
-    users = np.array([10, 20, 30, 40, 50, 60, 70], dtype=float)
-    response_time = np.array([15, 22, 32, 48, 70, 98, 135], dtype=float)
-
-    coefficients = fit_polynomial(users, response_time, degree=2)
-    fitted = np.polyval(coefficients, users)
-    residuals = response_time - fitted
-
-    rmse = compute_rmse(response_time, fitted)
-
-    print(f"Quadratic coefficients (a, b, c): {coefficients}")
-    print(f"RMSE: {rmse:.4f}")
-    print(f"Residuals: {residuals}")
-```
+However, a good fit to the observed data does not prove that response time will continue following the same quadratic pattern at much larger user counts. The system may enter a new regime because of saturation, queueing, caching, or other effects.
 
 ### Residual analysis
 
@@ -1703,11 +1175,19 @@ e_i=y_i-\hat y_i.
 
 Residual plots can reveal systematic patterns, unequal variance, or influential observations that a single error statistic may conceal.
 
+### Verification
+
+Calculate the residuals and RMSE independently, inspect the fitted curve, and evaluate predictions on held-out data when available. Model complexity should be justified rather than increased solely to reduce training error.
+
 **Conclusion:** regression quantifies relationships in observed data, but model adequacy and predictive reliability require additional evidence.
 
 ---
 
 ## Task 15 — Numerical Differentiation
+
+![Task 15: Numerical differentiation](docs/figures/task-15.svg)
+
+<sub>Figure: conceptual illustration of numerical differentiation; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1731,57 +1211,41 @@ The central-difference approximation is
 f'(x)\approx\frac{f(x+h)-f(x-h)}{2h}.
 \]
 
-Under suitable smoothness assumptions, its truncation error is \(O(h^2)\).
+Under suitable smoothness assumptions, its truncation error is \(O(h^2)\), making it more accurate than the forward difference for sufficiently small steps when other errors are controlled.
 
-### Computational method
+### Worked example
 
-```python
-"""Task 15: Numerical differentiation.
+Let
 
-Compares forward and central finite-difference approximations against
-an analytical derivative for f(x) = x^2.
-"""
+\[
+f(x)=x^2.
+\]
 
-from __future__ import annotations
+Its exact derivative is
 
-from typing import Callable
+\[
+f'(x)=2x.
+\]
 
+At \(x=3\), the exact derivative is \(6\).
 
-def forward_difference(
-    f: Callable[[float], float],
-    x: float,
-    h: float = 1e-5,
-) -> float:
-    """Approximate f'(x) using the forward-difference formula."""
-    return (f(x + h) - f(x)) / h
+Using the forward difference with \(h=0.1\),
 
+\[
+\frac{f(3.1)-f(3)}{0.1}
+=
+\frac{9.61-9}{0.1}=6.1.
+\]
 
-def central_difference(
-    f: Callable[[float], float],
-    x: float,
-    h: float = 1e-5,
-) -> float:
-    """Approximate f'(x) using the central-difference formula."""
-    return (f(x + h) - f(x - h)) / (2.0 * h)
+Using the central difference,
 
+\[
+\frac{f(3.1)-f(2.9)}{0.2}
+=
+\frac{9.61-8.41}{0.2}=6.
+\]
 
-if __name__ == "__main__":
-    f = lambda x: x**2
-    exact_derivative = lambda x: 2.0 * x
-
-    x0 = 3.0
-    exact = exact_derivative(x0)
-
-    print(f"{'h':>10}  {'Forward err':>12}  {'Central err':>12}")
-    print("-" * 38)
-
-    for h in [1e-1, 1e-2, 1e-3, 1e-4, 1e-5, 1e-6]:
-        fwd = forward_difference(f, x0, h)
-        ctr = central_difference(f, x0, h)
-        print(
-            f"{h:>10.1e}  {abs(fwd - exact):>12.2e}  {abs(ctr - exact):>12.2e}"
-        )
-```
+For this quadratic example, the central-difference result is exact apart from floating-point effects.
 
 ### Application: GPS speed estimation
 
@@ -1793,11 +1257,19 @@ v(t)\approx\frac{s(t+h)-s(t)}{h}.
 
 Differentiation amplifies measurement noise. A smaller step is therefore not always better when the input consists of noisy measurements.
 
+### Verification
+
+Test both methods against a function with a known derivative. Check units, boundary handling, and the effect of varying \(h\).
+
 **Conclusion:** numerical differentiation is useful for estimating rates of change, but its accuracy depends on both the numerical formula and the quality of the sampled data.
 
 ---
 
 ## Task 16 — Numerical Integration and Energy Estimation
+
+![Task 16: Numerical integration](docs/figures/task-16.svg)
+
+<sub>Figure: conceptual illustration of numerical integration; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1811,7 +1283,7 @@ The definite integral
 I=\int_a^b f(x)\,dx
 \]
 
-represents accumulated quantity over an interval.
+represents accumulated quantity over an interval. When an analytical antiderivative is unavailable or the data are discrete, numerical quadrature can approximate the integral.
 
 ### Trapezoidal rule
 
@@ -1823,49 +1295,63 @@ I\approx
 \frac{x_{i+1}-x_i}{2}(f_i+f_{i+1}).
 \]
 
-### Computational method
+Each interval is approximated by a trapezoid whose parallel sides have heights \(f_i\) and \(f_{i+1}\).
 
-```python
-"""Task 16: Numerical integration using the trapezoidal rule.
+### Worked example
 
-Approximates the integral of f(x) = x^2 on [0, 2] and compares with
-the exact value.
-"""
+Estimate
 
-from __future__ import annotations
+\[
+\int_0^2 x^2\,dx
+\]
 
-import numpy as np
-from numpy.typing import NDArray
-from scipy.integrate import trapezoid
+using two equal subintervals of width \(1\).
 
+The observations are
 
-def trapezoidal_integration(
-    x: NDArray[np.floating],
-    y: NDArray[np.floating],
-) -> float:
-    """Composite trapezoidal rule for non-uniformly spaced samples."""
-    return float(trapezoid(y, x))
+\[
+f(0)=0,\quad f(1)=1,\quad f(2)=4.
+\]
 
+Therefore,
 
-if __name__ == "__main__":
-    # Two subintervals of width 1 on [0, 2].
-    x = np.array([0.0, 1.0, 2.0])
-    y = x**2  # f(x) = x^2.
+\[
+I\approx
+\frac{1}{2}(0+1)+
+\frac{1}{2}(1+4).
+\]
 
-    approx = trapezoidal_integration(x, y)
-    exact = 8.0 / 3.0  # ∫₀² x² dx = 8/3.
+Thus,
 
-    print(f"Trapezoidal approximation: {approx:.6f}")
-    print(f"Exact integral:           {exact:.6f}")
-    print(f"Absolute error:           {abs(approx - exact):.6f}")
+\[
+I\approx0.5+2.5=3.
+\]
 
-    # Convergence check: refine the mesh.
-    for n in [2, 4, 8, 16, 32]:
-        x_fine = np.linspace(0.0, 2.0, n + 1)
-        y_fine = x_fine**2
-        approx_fine = trapezoidal_integration(x_fine, y_fine)
-        print(f"n = {n:>3}: error = {abs(approx_fine - exact):.6e}")
-```
+The exact integral is
+
+\[
+\int_0^2 x^2\,dx
+=\left[\frac{x^3}{3}\right]_0^2
+=\frac83\approx2.6667.
+\]
+
+The absolute error of the trapezoidal approximation is approximately
+
+\[
+|3-2.6667|=0.3333.
+\]
+
+This demonstrates that a valid numerical procedure can still introduce approximation error.
+
+### Application: electrical energy
+
+If electrical power is \(P(t)\), energy consumption is
+
+\[
+E=\int_{t_0}^{t_1}P(t)\,dt.
+\]
+
+When power is measured in kilowatts and time in hours, energy is measured in kilowatt-hours.
 
 ### Verification
 
@@ -1876,6 +1362,10 @@ Compare the quadrature result with an analytical integral when possible. Increas
 ---
 
 ## Task 17 — Euler's Method and Newton's Law of Cooling
+
+![Task 17: Euler method and Newton cooling](docs/figures/task-17.svg)
+
+<sub>Figure: conceptual illustration of euler method and newton cooling; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1895,6 +1385,8 @@ with initial condition
 T(0)=T_0.
 \]
 
+Here \(T(t)\) is the object's temperature, \(T_{\mathrm{amb}}\) is the ambient temperature, and \(k>0\) is the cooling constant.
+
 The analytical solution is
 
 \[
@@ -1907,6 +1399,13 @@ T(t)=T_{\mathrm{amb}}+
 Euler's method approximates the derivative over a small time interval \(h\):
 
 \[
+\frac{T_{n+1}-T_n}{h}
+\approx-k(T_n-T_{\mathrm{amb}}).
+\]
+
+Rearranging,
+
+\[
 \boxed{
 T_{n+1}
 =
@@ -1914,89 +1413,58 @@ T_n-hk(T_n-T_{\mathrm{amb}})
 }
 \]
 
-### Computational method
+This update calculates the next temperature using the current temperature and its estimated rate of change.
 
-```python
-"""Task 17: Euler's method for Newton's law of cooling.
+### Worked example
 
-Integrates the cooling ODE with Euler's method and compares against
-the analytical solution for varying step sizes.
-"""
+Let
 
-from __future__ import annotations
+\[
+T_0=100^\circ C,\quad
+T_{\mathrm{amb}}=20^\circ C,\quad
+k=0.1,\quad h=1.
+\]
 
-import numpy as np
-from numpy.typing import NDArray
+Then
 
+\[
+T_1=100-1(0.1)(100-20)=92^\circ C.
+\]
 
-def euler_cooling(
-    T0: float,
-    T_amb: float,
-    k: float,
-    h: float,
-    t_end: float,
-) -> tuple[NDArray[np.floating], NDArray[np.floating]]:
-    """Integrate the cooling ODE with Euler's method.
+The analytical solution at \(t=1\) is
 
-    Returns
-    -------
-    tuple[NDArray, NDArray]
-        Time array and temperature array.
-    """
-    n_steps = int(np.ceil(t_end / h))
-    t = np.linspace(0.0, n_steps * h, n_steps + 1)
-    T = np.empty_like(t)
-    T[0] = T0
+\[
+T(1)=20+80e^{-0.1}
+\approx92.39^\circ C.
+\]
 
-    for i in range(n_steps):
-        dT = -k * (T[i] - T_amb)
-        T[i + 1] = T[i] + h * dT
-
-    return t, T
-
-
-def analytical_cooling(
-    T0: float,
-    T_amb: float,
-    k: float,
-    t: NDArray[np.floating],
-) -> NDArray[np.floating]:
-    """Exact solution of Newton's law of cooling."""
-    return T_amb + (T0 - T_amb) * np.exp(-k * t)
-
-
-if __name__ == "__main__":
-    T0, T_amb, k = 100.0, 20.0, 0.1
-
-    print(f"{'h':>8}  {'T(1) Euler':>12}  {'T(1) Exact':>12}  {'Error':>10}")
-    print("-" * 48)
-
-    for h in [1.0, 0.5, 0.25, 0.1, 0.05]:
-        t, T_euler = euler_cooling(T0, T_amb, k, h, t_end=1.0)
-        T_exact = analytical_cooling(T0, T_amb, k, np.array([1.0]))[0]
-        T_euler_at_1 = T_euler[-1]
-        print(
-            f"{h:>8.2f}  {T_euler_at_1:>12.4f}  {T_exact:>12.4f}  "
-            f"{abs(T_euler_at_1 - T_exact):>10.4f}"
-        )
-
-    # Stability check: u_{n+1} = (1 - kh) u_n.
-    print("\nStability condition: |1 - kh| < 1")
-    for h in [1.0, 5.0, 10.0, 20.0]:
-        amplification = abs(1.0 - k * h)
-        status = "stable" if amplification < 1.0 else "UNSTABLE"
-        print(f"  h = {h:>5.1f}, |1 - kh| = {amplification:.4f} -> {status}")
-```
+The Euler approximation is approximately \(92^\circ C\), giving an absolute error of about \(0.39^\circ C\). The values are rounded for presentation.
 
 ### Step size and stability
 
 For a sufficiently smooth problem, Euler's method generally has first-order global error over a fixed interval in its stable regime. Halving \(h\) should reduce the leading global error by approximately a factor of two when the method is operating in its asymptotic convergence regime.
+
+For the cooling equation, the error dynamics are particularly transparent. Defining \(u_n=T_n-T_{\mathrm{amb}}\),
+
+\[
+u_{n+1}=(1-kh)u_n.
+\]
+
+The numerical solution decays without alternating sign when \(0\leq kh\leq1\), and its linear stability condition is \(|1-kh|<1\).
+
+### Verification
+
+Compare the numerical temperatures with the exact solution at identical times. Repeat the computation with smaller time steps and calculate the error ratio.
 
 **Conclusion:** Euler's method illustrates the fundamentals of time integration, but its simplicity must be balanced against step-size restrictions and approximation error.
 
 ---
 
 ## Task 18 — SciPy ODE Integration and RC Circuit Charging
+
+![Task 18: Adaptive ODE integration and RC circuit](docs/figures/task-18.svg)
+
+<sub>Figure: conceptual illustration of adaptive ode integration and rc circuit; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -2032,78 +1500,49 @@ The product
 \tau=RC
 \]
 
-is the circuit's time constant.
+is the circuit's time constant. At \(t=\tau\),
 
-### Computational method
+\[
+V_C(\tau)=V_s(1-e^{-1})
+\approx0.6321V_s.
+\]
+
+Thus, after one time constant, the capacitor reaches approximately \(63.2\%\) of the final voltage.
+
+### Numerical integration
+
+SciPy's `solve_ivp` solves initial-value problems of the form
+
+\[
+\frac{dy}{dt}=f(t,y),\qquad y(t_0)=y_0.
+\]
+
+It supports several numerical integration methods, including adaptive Runge–Kutta methods. The solver adjusts its step sizes according to its error-control procedure and specified tolerances. See the [SciPy `solve_ivp` documentation](https://docs.scipy.org/doc/scipy/reference/generated/scipy.integrate.solve_ivp.html).
+
+A typical implementation is:
 
 ```python
-"""Task 18: Adaptive ODE integration for an RC charging circuit.
-
-Uses scipy.integrate.solve_ivp to integrate the capacitor voltage ODE
-and compares the numerical solution with the analytical result.
-"""
-
-from __future__ import annotations
-
 import numpy as np
-from numpy.typing import NDArray
 from scipy.integrate import solve_ivp
 
+Vs = 5.0
+R = 1000.0
+C = 1e-6
 
-def rc_circuit_ode(
-    t: float,
-    y: NDArray[np.floating],
-    Vs: float,
-    R: float,
-    C: float,
-) -> list[float]:
-    """Right-hand side of the RC charging ODE."""
+def circuit_rhs(t, y):
     voltage = y[0]
     return [(Vs - voltage) / (R * C)]
 
-
-def analytical_rc(
-    t: NDArray[np.floating],
-    Vs: float,
-    R: float,
-    C: float,
-) -> NDArray[np.floating]:
-    """Exact capacitor voltage for an initially uncharged RC circuit."""
-    tau = R * C
-    return Vs * (1.0 - np.exp(-t / tau))
-
-
-if __name__ == "__main__":
-    Vs, R, C = 5.0, 1000.0, 1e-6
-    tau = R * C
-
-    # Integrate with adaptive Runge–Kutta (RK45) and tight tolerances.
-    solution = solve_ivp(
-        rc_circuit_ode,
-        (0.0, 5.0 * tau),
-        [0.0],
-        args=(Vs, R, C),
-        method="RK45",
-        rtol=1e-10,
-        atol=1e-12,
-        dense_output=True,
-    )
-
-    if not solution.success:
-        raise RuntimeError(f"ODE solver failed: {solution.message}")
-
-    t_numerical = solution.t
-    V_numerical = solution.y[0]
-
-    # Analytical reference at the same time points.
-    V_exact = analytical_rc(t_numerical, Vs, R, C)
-    max_error = float(np.max(np.abs(V_numerical - V_exact)))
-
-    print(f"Time constant τ = {tau:.6f} s")
-    print(f"V_C(τ) analytical = {Vs * (1 - np.exp(-1)):.4f} V")
-    print(f"V_C(τ) numerical  = {np.interp(tau, t_numerical, V_numerical):.4f} V")
-    print(f"Maximum absolute error: {max_error:.2e} V")
+solution = solve_ivp(
+    circuit_rhs,
+    (0.0, 0.01),
+    [0.0],
+    rtol=1e-8,
+    atol=1e-10
+)
 ```
+
+The code illustrates the model setup. Its numerical accuracy should be assessed by examining the returned solution rather than assumed from the chosen tolerance alone.
 
 ### Verification
 
@@ -2115,11 +1554,17 @@ E_{\max}=
 -V_{C,\mathrm{exact}}(t_i)|.
 \]
 
+Also check solver success, units, initial conditions, and the chosen tolerances.
+
 **Conclusion:** adaptive integration is valuable when fixed-step methods would be inefficient or difficult to control, but numerical solutions should still be compared with independent references when possible.
 
 ---
 
 ## Task 19 — Mathematical Optimisation
+
+![Task 19: Mathematical optimisation](docs/figures/task-19.svg)
+
+<sub>Figure: conceptual illustration of mathematical optimisation; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -2138,6 +1583,15 @@ subject to
 \[
 Ax\geq b,\qquad x\geq0.
 \]
+
+Here:
+
+- \(x\) is the decision-variable vector.
+- \(c\) contains the objective coefficients.
+- \(A\) describes the constraints.
+- \(b\) specifies the required resource levels.
+
+The feasible region contains every decision vector satisfying the constraints.
 
 ### Worked example
 
@@ -2165,47 +1619,14 @@ Since product \(B\) costs less per unit, choosing \(x=0\) and \(y=4\) gives
 C=3(0)+2(4)=8.
 \]
 
-### Computational method
+For any feasible non-negative \(x,y\),
 
-```python
-"""Task 19: Mathematical optimisation with linear programming.
+\[
+3x+2y\geq2x+2y
+=2(x+y)\geq8.
+\]
 
-Solves a small linear program using SciPy's linprog and demonstrates
-the effect of integer constraints.
-"""
-
-from __future__ import annotations
-
-import numpy as np
-from scipy.optimize import linprog
-
-
-def solve_continuous_lp() -> dict:
-    """Solve the continuous linear program min 3x + 2y s.t. x + y >= 4, x, y >= 0."""
-    # linprog minimizes c^T x, so convert the >= constraint to <=.
-    c = np.array([3.0, 2.0])
-    A_ub = np.array([[-1.0, -1.0]])  # -x - y <= -4  ⇔  x + y >= 4.
-    b_ub = np.array([-4.0])
-    bounds = [(0.0, None), (0.0, None)]
-
-    result = linprog(c, A_ub=A_ub, b_ub=b_ub, bounds=bounds, method="highs")
-
-    if not result.success:
-        raise RuntimeError(f"LP solver failed: {result.message}")
-
-    return {
-        "x": result.x,
-        "objective": result.fun,
-        "status": result.message,
-    }
-
-
-if __name__ == "__main__":
-    result = solve_continuous_lp()
-    print(f"Optimal x = {result['x']}")
-    print(f"Minimum cost = {result['objective']:.2f}")
-    print(f"Solver status: {result['status']}")
-```
+Therefore, the solution \((x,y)=(0,4)\) is optimal for this illustrative model, with minimum cost \(8\).
 
 ### Integer constraints
 
@@ -2217,11 +1638,19 @@ x_i\in\mathbb Z_{\geq0}.
 
 A continuous solution may be infeasible when quantities must be indivisible. Rounding a continuous optimum does not generally preserve feasibility or optimality.
 
+### Verification
+
+Evaluate the objective function at the proposed solution, check every constraint, and confirm the required variable domains. Solver termination status should be reported together with the actual feasibility checks.
+
 **Conclusion:** optimisation provides a systematic way to select decisions under constraints, but the mathematical formulation must accurately represent operational requirements.
 
 ---
 
 ## Task 20 — Monte Carlo Simulation and Probability Estimation
+
+![Task 20: Monte Carlo simulation](docs/figures/task-20.svg)
+
+<sub>Figure: conceptual illustration of monte carlo simulation; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -2267,84 +1696,38 @@ The estimated probability is
 }
 \]
 
-### Computational method
+This is the fraction of simulated observations that exceed the capacity threshold.
 
-```python
-"""Task 20: Monte Carlo simulation for overload probability estimation.
+### Worked example
 
-Estimates P(D > K) for D ~ N(mu, sigma^2) and quantifies the
-sampling uncertainty via standard error.
-"""
+Suppose a simulation produces \(120\) overload events from \(1{,}000\) independent samples.
 
-from __future__ import annotations
+The estimated probability is
 
-from dataclasses import dataclass
+\[
+\hat p=\frac{120}{1000}=0.12.
+\]
 
-import numpy as np
-from numpy.typing import NDArray
-from scipy.stats import norm
+The estimated overload probability is therefore \(12\%\).
 
+An approximate Monte Carlo standard error is
 
-@dataclass(frozen=True)
-class MonteCarloResult:
-    """Container for Monte Carlo estimation output."""
-    probability: float
-    standard_error: float
-    sample_size: int
-    analytical_probability: float
+\[
+\operatorname{SE}(\hat p)
+\approx
+\sqrt{\frac{\hat p(1-\hat p)}{N}}.
+\]
 
+Substituting,
 
-def monte_carlo_overload(
-    mu: float,
-    sigma: float,
-    capacity: float,
-    n_samples: int,
-    seed: int = 42,
-) -> MonteCarloResult:
-    """Estimate P(D > capacity) for D ~ N(mu, sigma^2).
+\[
+\operatorname{SE}(\hat p)
+\approx
+\sqrt{\frac{0.12(0.88)}{1000}}
+\approx0.0103.
+\]
 
-    Parameters
-    ----------
-    mu, sigma : float
-        Mean and standard deviation of the demand distribution.
-    capacity : float
-        Overload threshold.
-    n_samples : int
-        Number of independent Monte Carlo samples.
-    seed : int
-        Random seed for reproducibility.
-
-    Returns
-    -------
-    MonteCarloResult
-        Estimated probability, standard error, and analytical reference.
-    """
-    rng = np.random.default_rng(seed)
-    samples = rng.normal(mu, sigma, size=n_samples)
-
-    indicators = (samples > capacity).astype(float)
-    p_hat = float(np.mean(indicators))
-
-    se = float(np.sqrt(p_hat * (1.0 - p_hat) / n_samples))
-    analytical = float(1.0 - norm.cdf((capacity - mu) / sigma))
-
-    return MonteCarloResult(p_hat, se, n_samples, analytical)
-
-
-if __name__ == "__main__":
-    mu, sigma, capacity = 100.0, 20.0, 120.0
-
-    print(f"{'N':>10}  {'p̂':>10}  {'SE':>10}  {'Exact p':>10}  {'Error':>10}")
-    print("-" * 54)
-
-    for n in [100, 1_000, 10_000, 100_000, 1_000_000]:
-        result = monte_carlo_overload(mu, sigma, capacity, n)
-        error = abs(result.probability - result.analytical_probability)
-        print(
-            f"{n:>10}  {result.probability:>10.6f}  {result.standard_error:>10.6f}  "
-            f"{result.analytical_probability:>10.6f}  {error:>10.6f}"
-        )
-```
+The estimated standard error is approximately \(1.03\) percentage points. This calculation describes a hypothetical sample; it is not a result from the submitted program.
 
 ### Sample-size sensitivity
 
@@ -2355,6 +1738,14 @@ For independent samples under the usual assumptions, the standard error decrease
 \]
 
 Increasing the sample count by a factor of \(100\) reduces the theoretical standard-error scale by approximately a factor of \(10\).
+
+Monte Carlo simulation is especially useful when the probability of interest cannot be computed conveniently through direct integration or analytical methods.
+
+### Verification and limitations
+
+Compare the simulated estimate with the analytical probability when the distribution is known. Record the random seed and sample count, and report a confidence interval or standard-error estimate.
+
+The quality of the estimate depends on the sampling assumptions and the model. A large sample does not correct an inappropriate probability distribution, biased sampling, or incorrect simulation logic.
 
 **Conclusion:** Monte Carlo simulation estimates uncertainty through repeated sampling, but both sampling error and model validity must be considered.
 
@@ -2380,13 +1771,17 @@ Then calculate
 R=\frac{E(h)}{E(h/2)}.
 \]
 
-For a first-order method in its asymptotic convergence regime, the ratio should approach approximately \(2\).
+For a first-order method in its asymptotic convergence regime, the ratio should approach approximately \(2\). This is a theoretical expectation, not a guaranteed result for every pair of step sizes.
+
+The experiment demonstrates the trade-off between computational effort and approximation error: halving the step size approximately doubles the number of steps over a fixed interval.
 
 ## 4.2 Monte Carlo sample-size sensitivity
 
 Keep the demand model and capacity threshold fixed and compare several sample sizes.
 
 For each sample count \(N\), calculate the estimated probability and its standard error. Under independent sampling, increasing \(N\) reduces the standard-error scale according to \(N^{-1/2}\).
+
+Different random samples may produce different estimates even when the seed and model are controlled. The purpose of the experiment is to examine the relationship between sampling effort and uncertainty, not to assume that every estimate improves monotonically.
 
 ## 4.3 Other useful sensitivity experiments
 
@@ -2464,7 +1859,7 @@ For linear systems, a useful scaled residual is
 {\|A\|\|\hat x\|+\|b\|},
 \]
 
-when the denominator is nonzero.
+when the denominator is nonzero. This helps interpret residuals relative to the scale of the problem.
 
 For numerical integration, report the reference solution and error metric. For stochastic computation, report the sample count and an uncertainty estimate. For optimisation, report feasibility and termination status.
 
@@ -2488,6 +1883,8 @@ A Python package may use separate modules for individual tasks, shared utilities
 
 A random seed supports repeatable pseudorandom sequences under compatible conditions, but it does not guarantee identical results across all software versions and hardware environments.
 
+Likewise, a workflow configuration file demonstrates that automated checks have been configured; only the corresponding execution record can establish whether those checks passed.
+
 ### Suggested reproduction procedure
 
 From a fresh clone, use Python 3.10 or newer. Runtime and development dependencies are defined in `pyproject.toml`.
@@ -2498,7 +1895,7 @@ cd Scientific_computing-
 
 python -m venv .venv
 # Windows PowerShell:
-.venv\Scripts\Activate.ps1
+.venv\\Scripts\\Activate.ps1
 # macOS / Linux (use this instead of the Windows activation line):
 # source .venv/bin/activate
 
@@ -2515,7 +1912,6 @@ python -m ruff format --check src tests
 ```
 
 The figures embedded above are version-controlled SVG concept illustrations. Runtime-generated plots and JSON outputs remain reproducible artefacts; do not present benchmark timings, solver outputs, test coverage, or CI status as verified until the corresponding command or workflow has actually run.
-
 ---
 
 # 7. Critical Reflection and Learning Outcomes
