@@ -102,7 +102,7 @@ def main() -> dict[str, object]:
     logger.info("  → Type A servers: %.4f", solution[0])
     logger.info("  → Type B servers: %.4f", solution[1])
     logger.info("Verification A @ x: %s", A @ solution)
-    logger.info("Residual norm ‖b − Ax‖: %.3e", residual_norm)
+    logger.info("Residual norm ‖b - Ax‖: %.3e", residual_norm)
 
     payload = {
         "A": A,
