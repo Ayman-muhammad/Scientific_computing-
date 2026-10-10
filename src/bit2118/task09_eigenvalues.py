@@ -113,7 +113,7 @@ def main() -> dict[str, object]:
     logger.info("Eigenvector-based centrality:")
     for node, score in zip(NODES, centrality, strict=False):
         logger.info("  %s → %.4f", node, score)
-    logger.info("Verification ‖Av − λv‖: %.3e", verification)
+    logger.info("Verification ‖Av - λv‖: %.3e", verification)
 
     payload = {
         "adjacency": ADJACENCY,
