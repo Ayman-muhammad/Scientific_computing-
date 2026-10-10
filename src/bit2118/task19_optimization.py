@@ -77,7 +77,7 @@ def cost(z: np.ndarray) -> float:
 
 
 def capacity_constraint(z: np.ndarray) -> float:
-    """Inequality ``100 x + 170 y − 1000 ≥ 0``.
+    """Inequality ``100 x + 170 y - 1000 ≥ 0``.
 
     SLSQP expects the inequality in the "≥ 0" convention, so no sign
     flip is required.
@@ -169,7 +169,7 @@ def main() -> dict[str, object]:
         integer["cost"],
         integer["capacity"],
     )
-    logger.info("Cost gap (integer − continuous): %.2f", gap)
+    logger.info("Cost gap (integer - continuous): %.2f", gap)
     logger.info(
         "SLSQP converged: %s in %d iterations", continuous["success"], continuous["iterations"]
     )
