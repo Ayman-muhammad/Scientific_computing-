@@ -1,0 +1,49 @@
+# =============================================================================
+# Citation File Format (CFF v1.2.0)
+# -----------------------------------------------------------------------------
+# Rendered automatically by GitHub on the repository sidebar under
+# "Cite this repository". Keeps academic citation formatting consistent
+# across students and external readers.
+# =============================================================================
+
+cff-version: 1.2.0
+message: "If you use this software in academic work, please cite it using the metadata below."
+
+title: "BIT 2118 Scientific Computing — Reference Implementation"
+abstract: >-
+  A reference implementation of the BIT 2118 Scientific Computing group-work
+  brief, covering Tasks 02 through 20. Each task is packaged as an
+  independently runnable, tested, and documented Python module that produces
+  both machine-readable JSON results and publication-quality figures.
+
+type: software
+version: 1.0.0
+date-released: "2025-01-01"
+license: MIT
+
+authors:
+  - family-names: "Muhammad"
+    given-names: "Ayman"
+    affiliation: "BIT 2118 Scientific Computing Group"
+    email: "ayman@example.com"
+
+repository-code: "https://github.com/Ayman-muhammad/Scientific_computing-"
+url: "https://github.com/Ayman-muhammad/Scientific_computing-"
+issues: "https://github.com/Ayman-muhammad/Scientific_computing-/issues"
+
+keywords:
+  - numerical-methods
+  - scientific-computing
+  - numpy
+  - scipy
+  - matplotlib
+  - python
+  - bit2118
+
+preferred-citation:
+  type: software
+  title: "BIT 2118 Scientific Computing — Reference Implementation"
+  year: 2025
+  authors:
+    - family-names: "Muhammad"
+      given-names: "Ayman"

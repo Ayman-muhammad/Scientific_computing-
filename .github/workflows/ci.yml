@@ -1,0 +1,83 @@
+# =============================================================================
+# Continuous Integration
+# -----------------------------------------------------------------------------
+# Runs on every push to main and every PR against main.
+# Matrix-tests against Python 3.10, 3.11 and 3.12 to catch version drift.
+# Steps:
+#   1. Set up Python
+#   2. Install the package + dev extras
+#   3. Lint with ruff
+#   4. Run the pytest suite with coverage
+#   5. Smoke-test the batch runner
+#   6. Upload coverage as an artefact (retained 7 days)
+# =============================================================================
+
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch: {}
+
+# Cancel in-flight runs on the same ref — saves CI minutes.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: Python ${{ matrix.python-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.10", "3.11", "3.12"]
+
+    env:
+      # Deterministic matplotlib backend — no X server on the runner.
+      MPLBACKEND: Agg
+      # Keep NumPy from spawning many threads for tiny workloads.
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      MKL_NUM_THREADS: "1"
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Upgrade pip
+        run: python -m pip install --upgrade pip
+
+      - name: Install package (editable) with dev extras
+        run: pip install -e ".[dev]"
+
+      - name: Lint (ruff)
+        run: ruff check src tests
+
+      - name: Test (pytest + coverage)
+        run: pytest -v
+
+      - name: Smoke-test batch runner
+        run: python -m bit2118
+
+      - name: Upload coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.python-version }}
+          path: htmlcov/
+          retention-days: 7
+          if-no-files-found: ignore

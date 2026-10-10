@@ -1,0 +1,143 @@
+# =============================================================================
+# BIT 2118 Scientific Computing — PEP 621 project metadata + tool config
+# =============================================================================
+# This file is the single source of truth for packaging, dependency pins,
+# pytest, coverage, and ruff behaviour. Nothing here should be duplicated in
+# setup.py / setup.cfg — those are not used in this project.
+# =============================================================================
+
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+# -----------------------------------------------------------------------------
+# Project metadata
+# -----------------------------------------------------------------------------
+[project]
+name = "bit2118-scientific-computing"
+version = "1.0.0"
+description = "Reference implementation of the BIT 2118 Scientific Computing group-work brief (Tasks 02–20)."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+authors = [
+    { name = "Ayman Muhammad", email = "ayman@example.com" },
+]
+keywords = [
+    "numerical-methods",
+    "scientific-computing",
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "bit2118",
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Education",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Mathematics",
+]
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.11",
+    "matplotlib>=3.8",
+]
+
+# -----------------------------------------------------------------------------
+# Optional extras
+# -----------------------------------------------------------------------------
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.4",
+]
+
+# -----------------------------------------------------------------------------
+# URL map (mirrors what GitHub shows on the repo sidebar)
+# -----------------------------------------------------------------------------
+[project.urls]
+Homepage = "https://github.com/Ayman-muhammad/Scientific_computing-"
+Repository = "https://github.com/Ayman-muhammad/Scientific_computing-.git"
+Issues = "https://github.com/Ayman-muhammad/Scientific_computing-/issues"
+Changelog = "https://github.com/Ayman-muhammad/Scientific_computing-/blob/main/CHANGELOG.md"
+
+# -----------------------------------------------------------------------------
+# Package discovery — src/ layout
+# -----------------------------------------------------------------------------
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["bit2118*"]
+
+# -----------------------------------------------------------------------------
+# pytest configuration
+# -----------------------------------------------------------------------------
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+addopts = [
+    "-ra",
+    "-q",
+    "--strict-markers",
+    "--cov=bit2118",
+    "--cov-report=term-missing",
+    "--cov-report=html:htmlcov",
+]
+filterwarnings = [
+    "error",
+    "ignore::DeprecationWarning:scipy.*",
+]
+
+# -----------------------------------------------------------------------------
+# coverage configuration
+# -----------------------------------------------------------------------------
+[tool.coverage.run]
+source = ["src/bit2118"]
+branch = true
+omit = ["*/tests/*", "*/__main__.py"]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "if __name__ == .__main__.:",
+    "raise NotImplementedError",
+    "if TYPE_CHECKING:",
+]
+
+# -----------------------------------------------------------------------------
+# ruff — linter + formatter
+# -----------------------------------------------------------------------------
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "B",    # flake8-bugbear
+    "UP",   # pyupgrade
+    "SIM",  # flake8-simplify
+    "RUF",  # ruff-specific
+]
+ignore = [
+    "E501",  # line-length handled by formatter
+    "B008",  # function calls in argument defaults (fine for numpy)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101"]  # allow assert in tests
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+line-ending = "lf"
