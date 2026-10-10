@@ -53,13 +53,13 @@ SCALE_Y: float = 1.5
 # Pure functions
 # -----------------------------------------------------------------------------
 def rotation_matrix(angle_rad: float) -> np.ndarray:
-    """Return the 2×2 rotation matrix for ``angle_rad`` radians."""
+    """Return the 2x2 rotation matrix for ``angle_rad`` radians."""
     c, s = np.cos(angle_rad), np.sin(angle_rad)
     return np.array([[c, -s], [s, c]], dtype=float)
 
 
 def scaling_matrix(sx: float, sy: float) -> np.ndarray:
-    """Return the 2×2 axis-aligned scaling matrix."""
+    """Return the 2x2 axis-aligned scaling matrix."""
     return np.array([[sx, 0.0], [0.0, sy]], dtype=float)
 
 
@@ -72,7 +72,7 @@ def apply_transform(points: np.ndarray, transform: np.ndarray) -> np.ndarray:
 # Entry point
 # -----------------------------------------------------------------------------
 def main() -> dict[str, object]:
-    """Rotate 45° then scale (2×, 1.5×) a unit square.
+    """Rotate 45° then scale (2x, 1.5x) a unit square.
 
     Returns
     -------
