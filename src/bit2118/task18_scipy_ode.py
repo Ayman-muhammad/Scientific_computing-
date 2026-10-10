@@ -75,7 +75,7 @@ ATOL: float = 1e-11
 # Model
 # -----------------------------------------------------------------------------
 def rc_circuit(t: float, v: np.ndarray) -> list[float]:
-    """RC charging ODE ``dV/dt = (Vs − V) / (R C)``.
+    """RC charging ODE ``dV/dt = (Vs - V) / (R C)``.
 
     ``solve_ivp`` requires the right-hand side to accept scalar ``t`` and
     array-like state ``y`` even for a 1-D system; returning a list keeps
@@ -85,7 +85,7 @@ def rc_circuit(t: float, v: np.ndarray) -> list[float]:
 
 
 def exact_voltage(t: np.ndarray) -> np.ndarray:
-    """Analytical RC charging curve ``V(t) = Vs (1 − e^{-t/(RC)})``."""
+    """Analytical RC charging curve ``V(t) = Vs (1 - e^{-t/(RC)})``."""
     return VS * (1.0 - np.exp(-t / (R * C)))
 
 
@@ -137,7 +137,7 @@ def main() -> dict[str, object]:
     logger.info("Parameters: Vs=%.1f V, R=%.0f Ω, C=%.4f F, τ=%.3f s", VS, R, C, R * C)
     logger.info("Solver success: %s  (RHS evaluations=%d)", solution.success, solution.nfev)
     logger.info("V(%.1f s) = %.6f V", T_END, solution.y[0, -1])
-    logger.info("Maximum |solve_ivp − exact| = %.3e V", max_error)
+    logger.info("Maximum |solve_ivp - exact| = %.3e V", max_error)
 
     _plot_rc(solution.t, solution.y[0], exact)
     logger.info("Saved figure: %s", FIGURES_DIR / "task18_rc_circuit.png")
