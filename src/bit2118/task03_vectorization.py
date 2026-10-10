@@ -157,7 +157,7 @@ def main() -> dict[str, object]:
     logger.info("Samples:          %d", N_SAMPLES)
     logger.info("Loop time:        %.4f s", loop_time)
     logger.info("Vectorised time:  %.4f s", vector_time)
-    logger.info("Speed-up:         %.1f×", speedup)
+    logger.info("Speed-up:         %.1fx", speedup)
     logger.info("First five squared latencies: %s", result[:5])
 
     payload = {
