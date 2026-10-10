@@ -139,4 +139,5 @@ def test_non_finite_numbers_are_rejected_without_leaving_temp_files(
         save_results("invalid_numeric", {"value": float("nan")})
 
     assert not (tmp_results / "invalid_numeric.json").exists()
-    assert list(tmp_results.glob("*.tmp")) == []
+    # Inspect hidden temporary files too; glob("*.tmp") may omit dotfiles.
+    assert list(tmp_results.iterdir()) == []
