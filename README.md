@@ -1,5 +1,5 @@
 
-markdown = r"""# BIT 2118 — Scientific Computing
+# BIT 2118 — Scientific Computing
 ## Final Technical Submission Report
 
 **Student:** Ayman Muhammad  
