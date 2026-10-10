@@ -45,7 +45,7 @@ logger = get_logger(__name__)
 # Inputs
 # -----------------------------------------------------------------------------
 # Circle:   x² + y² = 4
-# Parabola: y = x² − 1
+# Parabola: y = x² - 1
 #
 # Two intersection points exist (mirror images about the y-axis). We seed
 # the solver with one positive-x and one negative-x initial guess to
@@ -70,7 +70,7 @@ def equations(z: np.ndarray) -> list[float]:
     Returns
     -------
     list of float
-        ``[x² + y² − 4, y − (x² − 1)]``. Both are zero at an intersection.
+        ``[x² + y² - 4, y - (x² - 1)]``. Both are zero at an intersection.
     """
     x, y = z
     return [x**2 + y**2 - 4.0, y - (x**2 - 1.0)]
@@ -141,8 +141,8 @@ def main() -> dict[str, object]:
 
     payload = {
         "equations": [
-            "x² + y² − 4 = 0",
-            "y − (x² − 1) = 0",
+            "x² + y² - 4 = 0",
+            "y - (x² - 1) = 0",
         ],
         "initial_guesses": [list(g) for g in INITIAL_GUESSES],
         "results": results,
