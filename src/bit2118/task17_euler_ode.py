@@ -67,7 +67,7 @@ END_TIME: float = 30.0  # min — simulation horizon
 # Model functions
 # -----------------------------------------------------------------------------
 def cooling_rate(temperature: float) -> float:
-    """``dT/dt = −k (T − T_ambient)``."""
+    """``dT/dt = -k (T - T_ambient)``."""
     return -K * (temperature - T_AMBIENT)
 
 
