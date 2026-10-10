@@ -328,7 +328,7 @@ may suffer cancellation. Rationalisation gives
 
 **Verification:** compare both expressions against a higher-precision reference over a range of \(x\) values and measure absolute and relative errors.
 
-![Task 04 — floating-point cancellation and numerical error](figures/task04_floating_point_error.png)
+![Task 04 — floating-point cancellation and numerical error](68.jpg)
 
 *Figure 3. Numerical error across input magnitudes. State the reference computation and error metric used.*
 
@@ -354,7 +354,7 @@ For scaling followed by rotation, the composite transformation is \(T=RS\). Sinc
 
 **Verification:** test determinant identities and compare transformed coordinates against direct calculations. State the order of matrix multiplication because matrix multiplication is generally noncommutative.
 
-![Task 05 — original and transformed coordinates](figures/task05_matrix_transformations.png)
+![Task 05 — original and transformed coordinates](69.jpg)
 
 *Figure 4. Original geometry and its transformed coordinates. Label the original and transformed shapes and state the rotation angle and scaling factors.*
 
@@ -370,7 +370,7 @@ A solution is operationally valid only if it also satisfies application constrai
 
 **Verification:** calculate the residual and check the original equations, non-negativity, and integrality where required.
 
-![Task 06 — resource allocation solution](figures/task06_linear_system.png)
+![Task 06 — resource allocation solution](70.png)
 
 *Figure 5. Resource-allocation inputs and computed solution. Include the equations or resource constraints used in the calculation.*
 
@@ -386,7 +386,7 @@ where \(P\) is a permutation matrix, \(L\) is lower triangular, and \(U\) is upp
 
 **Verification:** compare solutions against a trusted direct solver and evaluate residuals for every right-hand side. Consider pivoting and matrix conditioning when interpreting accuracy.
 
-![Task 07 — repeated linear-system solves](figures/task07_lu_reuse.png)
+![Task 07 — repeated linear-system solves](71.png)
 
 *Figure 6. Solutions obtained using a reused LU factorisation. Use measured results from the implementation; do not imply a speed-up unless it was benchmarked.*
 
@@ -398,7 +398,7 @@ Strict diagonal dominance is a useful sufficient convergence condition in many c
 
 **Verification:** record the residual or iteration error, check the stopping criterion, and compare against a direct solution.
 
-![Task 08 — Jacobi and Gauss–Seidel convergence](figures/task08_iterative_convergence.png)
+![Task 08 — Jacobi and Gauss–Seidel convergence](72.png)
 
 *Figure 7. Convergence history for Jacobi and Gauss–Seidel. The vertical axis must specify the residual norm or error measure.*
 
@@ -414,7 +414,7 @@ For an adjacency matrix, the dominant eigenvector can be used to define eigenvec
 
 **Verification:** calculate the eigenpair residual and check centrality normalisation. The dominant eigenvector should not be described as universally equivalent to PageRank.
 
-![Task 09 — network and eigenvector centrality](figures/task09_network_centrality.png)
+![Task 09 — network and eigenvector centrality](73.png)
 
 *Figure 8. Network structure with node sizes or labels derived from computed centrality values.*
 
@@ -430,7 +430,7 @@ the objective is to find \(T^\*\) such that \(f(T^\*)=0\). Bisection retains a r
 
 **Verification:** evaluate the residuals and confirm that the initial interval satisfies the sign-change condition.
 
-![Task 10 — nonlinear function and computed root](figures/task10_root_finding.png)
+![Task 10 — nonlinear function and computed root](74.png)
 
 *Figure 9. Function curve with the estimated root and search interval marked.*
 
@@ -452,7 +452,7 @@ Newton's method can converge rapidly near a suitable root but is sensitive to in
 
 **Verification:** evaluate the objective at the estimated root and consider whether multiple economically meaningful roots exist.
 
-![Task 11 — NPV against discount rate](figures/task11_irr_npv.png)
+![Task 11 — NPV against discount rate](75.png)
 
 *Figure 10. Net present value against discount rate. Mark the estimated root and report the cash-flow assumptions.*
 
@@ -478,7 +478,7 @@ Nonlinear systems may have multiple solutions, and the solver's output can depen
 
 **Verification:** substitute every candidate solution into both equations and inspect the residual vector.
 
-![Task 12 — circle and parabola intersections](figures/task12_nonlinear_intersections.png)
+![Task 12 — circle and parabola intersections](76.png)
 
 *Figure 11. Circle and parabola with candidate intersection points. Check every candidate against both equations.*
 
@@ -494,7 +494,7 @@ Cubic splines use piecewise cubic polynomials with continuity constraints. Smoot
 
 **Verification:** confirm that the interpolant reproduces supplied data at the knots and compare against a known reference or held-out observations when available.
 
-![Task 13 — samples and interpolation curves](figures/task13_interpolation.png)
+![Task 13 — samples and interpolation curves](77.png)
 
 *Figure 12. Observed samples and interpolated values. Distinguish measured points from estimated values.*
 
@@ -516,7 +516,7 @@ A quadratic model may describe response-time growth over a limited range, but ex
 
 **Verification:** calculate residuals and RMSE, inspect the fit graph, and compare predictions against independent data where possible.
 
-![Task 14 — measured response times and fitted curve](figures/task14_regression.png)
+![Task 14 — measured response times and fitted curve](78.png)
 
 *Figure 13. Observed server response times and the fitted model. State the RMSE and distinguish observations from predictions.*
 
@@ -540,7 +540,7 @@ For smooth functions, the forward difference has first-order truncation error an
 
 **Verification:** test against a known function with an analytical derivative and inspect units and noise sensitivity.
 
-![Task 15 — GPS position and estimated speed](figures/task15_gps_speed.png)
+![Task 15 — GPS position and estimated speed](79.png)
 
 *Figure 14. Position samples and estimated speed. Label distance and time units.*
 
@@ -563,7 +563,7 @@ When power is measured in kilowatts and time in hours, energy is measured in kil
 
 **Verification:** compare against a known integral and ensure units and sampling intervals are handled correctly.
 
-![Task 16 — power observations and integrated energy](figures/task16_energy_integration.png)
+![Task 16 — power observations and integrated energy](80.png)
 
 *Figure 15. Power over time; the area under the curve represents estimated energy consumption.*
 
@@ -591,7 +591,7 @@ Euler's method is simple and useful for understanding time stepping. Its global 
 
 **Verification:** compare numerical temperatures against the analytical solution at matching time points and repeat with smaller step sizes.
 
-![Task 17 — Euler approximation and exact cooling solution](figures/task17_newton_cooling.png)
+![Task 17 — Euler approximation and exact cooling solution](81.png)
 
 *Figure 16. Euler approximations compared with the analytical cooling solution.*
 
@@ -613,7 +613,7 @@ An adaptive solver such as SciPy's `solve_ivp` adjusts integration steps accordi
 
 **Verification:** compare the numerical solution with the analytical curve, inspect solver status, and evaluate maximum absolute error at defined comparison points.
 
-![Task 18 — numerical and analytical RC charging curves](figures/task18_rc_charging.png)
+![Task 18 — numerical and analytical RC charging curves](82.png)
 
 *Figure 17. Capacitor voltage during RC charging. Include the solver method and tolerances in the caption or surrounding text.*
 
@@ -630,7 +630,7 @@ If decision variables represent indivisible resources, integer constraints may b
 
 **Verification:** evaluate the objective, check all constraints, confirm variable domains, and report solver termination status.
 
-![Task 19 — feasible capacity and cost comparison](figures/task19_capacity_optimisation.png)
+![Task 19 — feasible capacity and cost comparison](83.png)
 
 *Figure 18. Feasible resource allocations and their costs. Highlight the selected solution and capacity requirement.*
 
@@ -659,7 +659,7 @@ Sampling uncertainty decreases at a rate proportional to \(N^{-1/2}\). Reducing 
 
 **Verification:** compare the estimate with the analytical probability, calculate a sampling-uncertainty measure, and record the random seed.
 
-![Task 20 — demand distribution and overload threshold](figures/task20_monte_carlo.png)
+![Task 20 — demand distribution and overload threshold](84.png)
 
 *Figure 19. Simulated demand distribution with the overload threshold marked. Report the estimated probability and its uncertainty.*
 
@@ -687,7 +687,7 @@ R=\frac{E(h)}{E(h/2)}.
 
 For a method operating in its first-order convergence regime, \(R\) is expected to approach approximately \(2\) as the step size becomes sufficiently small.
 
-![Task 17 — Euler error against step size](figures/task17_step_size_sensitivity.png)
+![Task 17 — Euler error against step size](81.png)
 
 *Figure 20. Absolute Euler error for multiple step sizes. A log–log plot can help assess the observed convergence order.*
 
