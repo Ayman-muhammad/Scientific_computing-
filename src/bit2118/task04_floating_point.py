@@ -67,9 +67,9 @@ def relative_error(true: float, approx: float) -> float:
 
 
 def unstable_sqrt_identity(x: float) -> float:
-    """Catastrophically cancelling form ``(√(1+x) − 1) / x``.
+    """Catastrophically cancelling form ``(√(1+x) - 1) / x``.
 
-    For small ``x`` the subtraction ``√(1+x) − 1`` loses most of its
+    For small ``x`` the subtraction ``√(1+x) - 1`` loses most of its
     significant digits to cancellation.
     """
     return (np.sqrt(1.0 + x) - 1.0) / x
