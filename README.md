@@ -1,5 +1,3 @@
-from pathlib import Path
-import pypandoc
 
 markdown = r"""# BIT 2118 — Scientific Computing
 ## Final Technical Submission Report
