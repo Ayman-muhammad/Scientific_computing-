@@ -132,7 +132,7 @@ def main() -> dict[str, object]:
         "Dense grid: %d points at %.0f-minute resolution", grid.size, SAMPLE_STEP_HOURS * 60
     )
     logger.info("Estimate at 10:30 — linear: %.3f °C | cubic: %.3f °C", lin_val, cub_val)
-    logger.info("Difference (cubic − linear): %.3f °C", cub_val - lin_val)
+    logger.info("Difference (cubic - linear): %.3f °C", cub_val - lin_val)
 
     _plot_interpolation(HOURS, TEMPERATURE, grid, linear_est, cubic_est)
     logger.info("Saved figure: %s", FIGURES_DIR / "task13_interpolation.png")
