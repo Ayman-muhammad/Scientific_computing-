@@ -57,7 +57,7 @@ FP_MAX_ITER: int = 200
 # Model functions
 # -----------------------------------------------------------------------------
 def heat_balance(t: float) -> float:
-    """Nonlinear heat-balance function ``f(T) = T − 25 − 10·e^(−T/20)``.
+    """Nonlinear heat-balance function ``f(T) = T - 25 - 10·e^(-T/20)``.
 
     ``f(T) = 0`` means heat gain equals heat loss. The bracket
     ``[20, 40]`` contains exactly one sign change.
@@ -66,7 +66,7 @@ def heat_balance(t: float) -> float:
 
 
 def g_fixed_point(t: float) -> float:
-    """Fixed-point form ``T = 25 + 10·e^(−T/20)`` derived from f(T)=0."""
+    """Fixed-point form ``T = 25 + 10·e^(-T/20)`` derived from f(T)=0."""
     return 25.0 + 10.0 * np.exp(-t / 20.0)
 
 
@@ -108,7 +108,7 @@ def _plot_equilibrium(root: float) -> None:
     ensure_dirs()
     temps = np.linspace(20.0, 40.0, 400)
     fig, ax = plt.subplots(figsize=(8, 4.5))
-    ax.plot(temps, heat_balance(temps), label="f(T) = T − 25 − 10·e^(−T/20)")
+    ax.plot(temps, heat_balance(temps), label="f(T) = T - 25 - 10·e^(-T/20)")
     ax.axhline(0.0, linewidth=0.8, color="k")
     ax.axvline(root, linestyle="--", color="crimson", label=f"root ≈ {root:.4f} °C")
     ax.set_xlabel("Temperature (°C)")
