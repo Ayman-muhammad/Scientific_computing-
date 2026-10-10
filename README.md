@@ -304,7 +304,7 @@ where \(S\) is the measured speed-up. Vectorisation can reduce interpreter overh
 
 **Verification:** compare output arrays within an appropriate tolerance and measure both implementations under comparable conditions.
 
-![Task 03 — loop and vectorised execution times](figures/task03_vectorization_benchmark.png)
+![Task 03 — loop and vectorised execution times](98.png)
 
 *Figure 2. Runtime comparison between loop-based and vectorised computation. Report the measurement procedure, array size, and execution environment.*
 
