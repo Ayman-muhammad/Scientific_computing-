@@ -328,7 +328,7 @@ may suffer cancellation. Rationalisation gives
 
 **Verification:** compare both expressions against a higher-precision reference over a range of \(x\) values and measure absolute and relative errors.
 
-![Task 04 — floating-point cancellation and numerical error](68.jpg)
+![Task 04 — floating-point cancellation and numerical error](85.jpg)
 
 *Figure 3. Numerical error across input magnitudes. State the reference computation and error metric used.*
 
@@ -701,7 +701,7 @@ Keep the demand model and capacity threshold fixed while changing the sample cou
 
 A hundredfold increase in sample count therefore reduces the theoretical standard-error scale by approximately a factor of ten, provided the assumptions remain unchanged.
 
-![Task 20 — Monte Carlo estimate against sample size](figures/task20_sample_size_sensitivity.png)
+![Task 20 — Monte Carlo estimate against sample size](84.png)
 
 *Figure 21. Estimated overload probability and an uncertainty interval as sample size increases.*
 
