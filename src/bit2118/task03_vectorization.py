@@ -20,10 +20,9 @@ by a Python ``for`` loop runs one scalar operation per iteration.
 
 Real-world application
 ----------------------
-A network-monitoring system receives one million latency measurements in
-milliseconds. It must convert each to seconds and square the result for a
-downstream error calculation. Vectorised NumPy is typically 20–100× faster
-than the equivalent Python loop.
+A network-monitoring system receives latency measurements in milliseconds.
+This task compares a Python loop with NumPy vectorisation. The speed-up is
+measured on the current machine; no fixed performance ratio is assumed.
 
 Interpretation of the output
 ----------------------------
@@ -35,6 +34,7 @@ Interpretation of the output
 from __future__ import annotations
 
 import timeit
+from statistics import median
 
 import numpy as np
 
@@ -120,15 +120,36 @@ def main() -> dict[str, object]:
 
     latency_ms = make_samples(N_SAMPLES)
 
-    # Warm-up: prime the NumPy ufunc cache and avoid timing the first
-    # allocation of the output array, which is disproportionately slow.
-    vectorized_version(latency_ms)
+    # Warm up both implementations on the same representative sample.
+    # Correctness is checked separately from timing so the benchmark cannot
+    # silently report a speed-up for mathematically different outputs.
+    warmup = latency_ms[: min(10_000, latency_ms.size)]
+    loop_version(warmup)
+    vectorized_version(warmup)
+    if not np.allclose(
+        np.asarray(loop_version(warmup)),
+        vectorized_version(warmup),
+        rtol=1e-12,
+        atol=1e-15,
+    ):
+        raise RuntimeError("Loop and vectorised implementations produced different results.")
 
-    loop_time = timeit.timeit(lambda: loop_version(latency_ms), number=1)
-    vector_time = (
-        timeit.timeit(lambda: vectorized_version(latency_ms), number=BENCHMARK_REPEATS)
-        / BENCHMARK_REPEATS
+    # Repeat both implementations equally and report the median to reduce
+    # sensitivity to a single noisy timing sample.
+    loop_times = timeit.repeat(
+        lambda: loop_version(latency_ms),
+        repeat=BENCHMARK_REPEATS,
+        number=1,
     )
+    vector_times = timeit.repeat(
+        lambda: vectorized_version(latency_ms),
+        repeat=BENCHMARK_REPEATS,
+        number=1,
+    )
+    loop_time = median(loop_times)
+    vector_time = median(vector_times)
+    if vector_time <= 0.0:
+        raise RuntimeError("Vectorised benchmark duration must be positive.")
     speedup = loop_time / vector_time
 
     result = vectorized_version(latency_ms)
