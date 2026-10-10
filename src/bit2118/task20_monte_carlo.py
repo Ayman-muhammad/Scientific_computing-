@@ -62,7 +62,7 @@ logger = get_logger(__name__)
 # -----------------------------------------------------------------------------
 CAPACITY: float = 1000.0  # units of demand served per interval
 MEAN_DEMAND: float = 850.0  # μ of Gaussian demand
-STD_DEMAND: float = 120.0  # σ of Gaussian demand
+STD_DEMAND: float = 120.0  # sigma of Gaussian demand
 N_SIMULATIONS: int = 100_000
 SEED: int = 42
 PLOT_POINTS: int = 400  # log-spaced samples for the convergence plot
@@ -148,7 +148,7 @@ def main() -> dict[str, object]:
     std_error = float(np.sqrt(probability * (1.0 - probability) / N_SIMULATIONS))
 
     logger.info(
-        "Model: demand ~ N(μ=%.1f, σ=%.1f), capacity=%.1f",
+        "Model: demand ~ N(μ=%.1f, sigma=%.1f), capacity=%.1f",
         MEAN_DEMAND,
         STD_DEMAND,
         CAPACITY,
