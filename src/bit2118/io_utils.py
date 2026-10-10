@@ -27,8 +27,11 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import platform
+import re
 import sys
+import tempfile
 from collections.abc import Mapping
 from datetime import datetime, timezone
 from pathlib import Path
@@ -122,8 +125,16 @@ def results_path(name: str) -> Path:
     ``name`` may be a bare task name (``"task07_gaussian_lu"``) or a path
     fragment. The ``.json`` suffix is appended automatically if absent.
     """
-    filename = name if name.endswith(".json") else f"{name}.json"
-    return RESULTS_DIR / filename
+    if not isinstance(name, str):
+        raise TypeError("Result name must be a string.")
+
+    stem = name[:-5] if name.endswith(".json") else name
+    if not re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_-]*", stem):
+        raise ValueError(
+            "Result name must contain only letters, digits, underscores, and hyphens; "
+            "path separators and traversal components are not allowed."
+        )
+    return RESULTS_DIR / f"{stem}.json"
 
 
 def save_results(
@@ -169,14 +180,38 @@ def save_results(
     record.setdefault("task", name)
     record.setdefault("meta", build_meta(seed=seed))
 
-    # Write atomically: emit to a temporary file, then rename. This
-    # prevents a partially-written JSON from being observed if the
-    # process is interrupted.
-    tmp = out.with_suffix(out.suffix + ".tmp")
-    with tmp.open("w", encoding="utf-8") as fh:
-        json.dump(record, fh, indent=2, sort_keys=False, default=_json_default)
-        fh.write("\n")
-    tmp.replace(out)
+    # Use a unique temporary file in the destination directory so concurrent
+    # task runs cannot overwrite one another's temporary output. os.replace()
+    # is atomic on the same filesystem and prevents partial JSON from being read.
+    temporary_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="w",
+            encoding="utf-8",
+            newline="\n",
+            dir=out.parent,
+            prefix=f".{out.name}.",
+            suffix=".tmp",
+            delete=False,
+        ) as fh:
+            temporary_path = Path(fh.name)
+            json.dump(
+                record,
+                fh,
+                indent=2,
+                sort_keys=False,
+                default=_json_default,
+                allow_nan=False,
+            )
+            fh.write("\n")
+            fh.flush()
+            os.fsync(fh.fileno())
+
+        os.replace(temporary_path, out)
+        temporary_path = None
+    finally:
+        if temporary_path is not None:
+            temporary_path.unlink(missing_ok=True)
 
     logger.debug("Wrote result file: %s", out)
     return out
