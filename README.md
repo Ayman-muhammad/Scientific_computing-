@@ -2,10 +2,10 @@
 ## Final Technical Submission Report
 
 **Student:** Ayman Muhammad  
-**Student ID:** [Insert student ID]  
+**Student ID:** BSCCS/2025/30137 
 **Course:** BIT 2118 — Scientific Computing  
 **Assignment:** Group Work — Tasks 02–20  
-**Submission date:** [Insert submission date]  
+**Submission date:** 10/10/2026  
 **GitHub repository:** https://github.com/Ayman-muhammad/Scientific_computing-  
 **Branch:** `main`  
 **Reference commit:** `ac9d7dc`  
@@ -1224,4 +1224,4 @@ Do not replace these fields with anticipated results.
 
 **Student:** Ayman Muhammad  
 **Course:** BIT 2118 — Scientific Computing  
-**Submission date:** [Insert submission date]
+**Submission date:** 10/10/2026
