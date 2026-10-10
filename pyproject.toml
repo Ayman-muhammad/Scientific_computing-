@@ -21,7 +21,7 @@ readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }
 authors = [
-    { name = "Ayman Muhammad", email = "ayman@example.com" },
+    { name = "Ayman Muhammad" },
 ]
 keywords = [
     "numerical-methods",
