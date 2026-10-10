@@ -53,6 +53,10 @@ The objectives are to:
 
 ## Task 02 — NumPy Arrays and Descriptive Statistics
 
+![Task 02: NumPy arrays and descriptive statistics](docs/figures/task-02.svg)
+
+<sub>Figure: conceptual illustration of numpy arrays and descriptive statistics; visual aid only, not a measured result.</sub>
+
 ### Objective
 
 To represent numerical observations using arrays, perform element-wise operations, and calculate descriptive statistics efficiently.
@@ -128,6 +132,10 @@ Verification should include checking the calculated mean independently and confi
 
 ## Task 03 — Vectorisation and Performance Analysis
 
+![Task 03: Vectorisation and benchmarking](docs/figures/task-03.svg)
+
+<sub>Figure: conceptual illustration of vectorisation and benchmarking; visual aid only, not a measured result.</sub>
+
 ### Objective
 
 To compare explicit looping with vectorised numerical computation and understand the conditions under which vectorisation improves performance.
@@ -194,6 +202,10 @@ Confirm that both implementations return equivalent arrays using a tolerance-bas
 ---
 
 ## Task 04 — Floating-Point Arithmetic and Numerical Stability
+
+![Task 04: Floating-point stability](docs/figures/task-04.svg)
+
+<sub>Figure: conceptual illustration of floating-point stability; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -280,6 +292,10 @@ Evaluate both algebraic forms over a range of small and moderate values, compari
 ---
 
 ## Task 05 — Matrix Algebra and Geometric Transformations
+
+![Task 05: Matrix transformations](docs/figures/task-05.svg)
+
+<sub>Figure: conceptual illustration of matrix transformations; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -382,6 +398,10 @@ Test transformations on known points and confirm the determinant identities. Che
 
 ## Task 06 — Solving Systems of Linear Equations
 
+![Task 06: Linear systems](docs/figures/task-06.svg)
+
+<sub>Figure: conceptual illustration of linear systems; visual aid only, not a measured result.</sub>
+
 ### Objective
 
 To solve simultaneous linear equations and assess whether the calculated solution satisfies the original system and any application constraints.
@@ -465,6 +485,10 @@ Substitute the solution into the original equations, calculate the residual norm
 ---
 
 ## Task 07 — LU Decomposition
+
+![Task 07: LU decomposition](docs/figures/task-07.svg)
+
+<sub>Figure: conceptual illustration of lu decomposition; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -586,6 +610,10 @@ Check that \(PA=LU\), solve each system, and evaluate its residual. Pivoting sho
 
 ## Task 08 — Iterative Linear Solvers: Jacobi and Gauss–Seidel
 
+![Task 08: Jacobi and Gauss–Seidel](docs/figures/task-08.svg)
+
+<sub>Figure: conceptual illustration of jacobi and gauss–seidel; visual aid only, not a measured result.</sub>
+
 ### Objective
 
 To understand iterative methods for solving large linear systems and compare their convergence behaviour.
@@ -694,6 +722,10 @@ Compare the final approximation with a direct solution, record the residual norm
 
 ## Task 09 — Eigenvalues, Eigenvectors, and Network Centrality
 
+![Task 09: Eigenvalues and network centrality](docs/figures/task-09.svg)
+
+<sub>Figure: conceptual illustration of eigenvalues and network centrality; visual aid only, not a measured result.</sub>
+
 ### Objective
 
 To explain the eigenvalue problem and how eigenvectors can be used to assess the importance of nodes in a network.
@@ -764,6 +796,10 @@ and check that \(\|r\|\) is sufficiently small. Eigenvectors may be normalised t
 ---
 
 ## Task 10 — Bisection and Fixed-Point Iteration
+
+![Task 10: Bisection and fixed-point iteration](docs/figures/task-10.svg)
+
+<sub>Figure: conceptual illustration of bisection and fixed-point iteration; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -845,6 +881,10 @@ Confirm the initial sign change for bisection, calculate the final residual \(|f
 
 ## Task 11 — Newton's Method, Secant Method, and Internal Rate of Return
 
+![Task 11: Newton, secant and internal rate of return](docs/figures/task-11.svg)
+
+<sub>Figure: conceptual illustration of newton, secant and internal rate of return; visual aid only, not a measured result.</sub>
+
 ### Objective
 
 To explain derivative-based and derivative-free root-finding methods and their use in financial calculations.
@@ -922,6 +962,10 @@ Substitute the estimated discount rate into the NPV equation and check that the 
 ---
 
 ## Task 12 — Solving Nonlinear Systems
+
+![Task 12: Nonlinear systems](docs/figures/task-12.svg)
+
+<sub>Figure: conceptual illustration of nonlinear systems; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1023,6 +1067,10 @@ Every candidate should be substituted into both original equations. Graphical in
 
 ## Task 13 — Interpolation and Cubic Splines
 
+![Task 13: Interpolation and cubic splines](docs/figures/task-13.svg)
+
+<sub>Figure: conceptual illustration of interpolation and cubic splines; visual aid only, not a measured result.</sub>
+
 ### Objective
 
 To estimate intermediate values from known data points and compare linear interpolation with spline interpolation.
@@ -1071,6 +1119,10 @@ Check that the interpolant reproduces the supplied data at every knot. Where a r
 ---
 
 ## Task 14 — Curve Fitting and Regression
+
+![Task 14: Regression and curve fitting](docs/figures/task-14.svg)
+
+<sub>Figure: conceptual illustration of regression and curve fitting; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1132,6 +1184,10 @@ Calculate the residuals and RMSE independently, inspect the fitted curve, and ev
 ---
 
 ## Task 15 — Numerical Differentiation
+
+![Task 15: Numerical differentiation](docs/figures/task-15.svg)
+
+<sub>Figure: conceptual illustration of numerical differentiation; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1210,6 +1266,10 @@ Test both methods against a function with a known derivative. Check units, bound
 ---
 
 ## Task 16 — Numerical Integration and Energy Estimation
+
+![Task 16: Numerical integration](docs/figures/task-16.svg)
+
+<sub>Figure: conceptual illustration of numerical integration; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1302,6 +1362,10 @@ Compare the quadrature result with an analytical integral when possible. Increas
 ---
 
 ## Task 17 — Euler's Method and Newton's Law of Cooling
+
+![Task 17: Euler method and Newton cooling](docs/figures/task-17.svg)
+
+<sub>Figure: conceptual illustration of euler method and newton cooling; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1397,6 +1461,10 @@ Compare the numerical temperatures with the exact solution at identical times. R
 ---
 
 ## Task 18 — SciPy ODE Integration and RC Circuit Charging
+
+![Task 18: Adaptive ODE integration and RC circuit](docs/figures/task-18.svg)
+
+<sub>Figure: conceptual illustration of adaptive ode integration and rc circuit; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1494,6 +1562,10 @@ Also check solver success, units, initial conditions, and the chosen tolerances.
 
 ## Task 19 — Mathematical Optimisation
 
+![Task 19: Mathematical optimisation](docs/figures/task-19.svg)
+
+<sub>Figure: conceptual illustration of mathematical optimisation; visual aid only, not a measured result.</sub>
+
 ### Objective
 
 To formulate optimisation problems, identify feasible solutions, and distinguish continuous optimisation from problems involving indivisible resources.
@@ -1575,6 +1647,10 @@ Evaluate the objective function at the proposed solution, check every constraint
 ---
 
 ## Task 20 — Monte Carlo Simulation and Probability Estimation
+
+![Task 20: Monte Carlo simulation](docs/figures/task-20.svg)
+
+<sub>Figure: conceptual illustration of monte carlo simulation; visual aid only, not a measured result.</sub>
 
 ### Objective
 
@@ -1811,25 +1887,31 @@ Likewise, a workflow configuration file demonstrates that automated checks have 
 
 ### Suggested reproduction procedure
 
-Use the project's actual installation instructions and package configuration. If the package is configured for editable installation and provides the relevant entry point, the following is a typical workflow:
+From a fresh clone, use Python 3.10 or newer. Runtime and development dependencies are defined in `pyproject.toml`.
 
 ```bash
 git clone https://github.com/Ayman-muhammad/Scientific_computing-.git
 cd Scientific_computing-
 
 python -m venv .venv
+# Windows PowerShell:
+.venv\\Scripts\\Activate.ps1
+# macOS / Linux (use this instead of the Windows activation line):
+# source .venv/bin/activate
+
 python -m pip install --upgrade pip
+python -m pip install -e ".[dev]"
 
-# Activate the environment using the command for your operating system.
-# Install the project and its configured development dependencies.
-
+# Execute all registered numerical tasks and regenerate outputs.
 python -m bit2118
-pytest -v
-ruff check src tests
+
+# Quality gates
+python -m pytest -v
+python -m ruff check src tests
+python -m ruff format --check src tests
 ```
 
-The exact installation and execution commands must agree with the repository's `README.md` and `pyproject.toml`. They should not be treated as confirmed until checked against the actual configuration.
-
+The figures embedded above are version-controlled SVG concept illustrations. Runtime-generated plots and JSON outputs remain reproducible artefacts; do not present benchmark timings, solver outputs, test coverage, or CI status as verified until the corresponding command or workflow has actually run.
 ---
 
 # 7. Critical Reflection and Learning Outcomes
