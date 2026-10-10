@@ -285,7 +285,7 @@ NumPy applies this transformation element-wise without requiring an explicit Pyt
 
 **Verification:** compare the array statistics against independently calculated values and confirm that each Fahrenheit value satisfies the conversion equation.
 
-![Task 02 — weather observations and descriptive statistics](figures/task02_weather_statistics.png)
+![Task 02 — weather observations and descriptive statistics](Gemini_Generated_Image_jv7zxxjv7zxxjv7z.jpg)
 
 *Figure 1. Weather observations and descriptive statistics. Generate this figure from the same data used by Task 02; label the time axis and temperature units.*
 
