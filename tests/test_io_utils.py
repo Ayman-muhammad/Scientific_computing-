@@ -118,3 +118,25 @@ def test_overwrite_false_keeps_existing(tmp_results: Path) -> None:
     save_results("keep", {"version": 2}, overwrite=False)
     loaded = load_results("keep")
     assert loaded["version"] == 1
+
+
+def test_results_path_rejects_path_traversal() -> None:
+    with pytest.raises(ValueError):
+        results_path("../outside")
+    with pytest.raises(ValueError):
+        results_path("nested/task")
+
+
+def test_results_path_accepts_task_identifiers() -> None:
+    assert results_path("task02_numpy_arrays").name == "task02_numpy_arrays.json"
+    assert results_path("task02_numpy_arrays.json").name == "task02_numpy_arrays.json"
+
+
+def test_non_finite_numbers_are_rejected_without_leaving_temp_files(
+    tmp_results: Path,
+) -> None:
+    with pytest.raises(ValueError):
+        save_results("invalid_numeric", {"value": float("nan")})
+
+    assert not (tmp_results / "invalid_numeric.json").exists()
+    assert list(tmp_results.glob("*.tmp")) == []
